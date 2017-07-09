@@ -1,0 +1,12 @@
+# src/AppMatrix/MatrixBundle/Resources/config/routing.yml
+AppMatrixMatrixBundle_homepage:
+    path:     /
+    defaults: { _controller: "AppMatrixMatrixBundle:Page:index" }
+    requirements:
+         methods:  GET
+
+AppMatrixMatrixBundle_test:
+    path:     /test
+    defaults: { _controller: "AppMatrixMatrixBundle:Page:test" }
+    requirements:
+         methods:  GET

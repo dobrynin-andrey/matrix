@@ -1,0 +1,3 @@
+app_matrix_matrix:
+    resource: "@AppMatrixMatrixBundle/Resources/config/routing.yml"
+    prefix:   /
