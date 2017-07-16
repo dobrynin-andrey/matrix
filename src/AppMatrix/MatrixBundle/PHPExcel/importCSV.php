@@ -81,6 +81,7 @@ class importCSV extends PHPExcel {
             }
 
         }
+        array_splice($arMD, 0, 1);
         return $arMD;
 
     }

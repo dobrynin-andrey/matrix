@@ -3,6 +3,7 @@
 
 namespace AppMatrix\MatrixBundle\Controller;
 
+use AppMatrix\MatrixBundle\Entity\District;
 use AppMatrix\MatrixBundle\PHPExcel\importCSV;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -10,52 +11,59 @@ class PageController extends Controller
 {
     public function indexAction()
     {
-        $root = str_replace("app", "", $this->get('kernel')->getRootDir());
-        $path =  $root . 'upload/import_csv/';
-        dump($path);
-        $phpCSV = new importCSV;
-        $files = $phpCSV->readDir($path);
-        var_dump($files);
-        dump($files);
+        $root = str_replace("app", "", $this->get('kernel')->getRootDir()); // Путь от корня
+        $path =  $root . 'upload/import_csv/'; // Путь к дирректории импорта
 
-        $correctFiles = $phpCSV->detectCSV($files);
-        dump($correctFiles);
+        $phpCSV = new importCSV; // Создание объекта
+        $files = $phpCSV->readDir($path); // Чтение и помещение в массив файлов дирректории
 
-        $arrParse = $phpCSV->parseCSV($path, $correctFiles["CORRECT"][0]);
+        $correctFiles = $phpCSV->detectCSV($files); // Проверка на корректность .csv
 
-        print_r($arrParse);
-//       foreach ($correctFiles["CORRECT"] as $file) {
-//           dump($file);
-//
-//       }
-
-       //var_dump($arrParse);
-
-       /* // Открываем файл
-        $xls = PHPExcel_IOFactory::load('/var/www/html/matrix/upload/import_csv/'.$files[0]);
-// Устанавливаем индекс активного листа
-        $xls->setActiveSheetIndex(0);
-// Получаем активный лист
-        $sheet = $xls->getActiveSheet();
+        $arrParse = $phpCSV->parseCSV($path, $correctFiles["CORRECT"][0]); // Парсинг корректных файлов
 
 
-        echo "<table>";
+        /**
+         * Предварительная очистка таблицы
+         */
+        $em = $this->getDoctrine()->getManager();
+        $connection = $em->getConnection();
+        $platform   = $connection->getDatabasePlatform();
+        $connection->executeUpdate($platform->getTruncateTableSQL('district', true /* whether to cascade */));
 
-        for ($i = 1; $i <= $sheet->getHighestRow(); $i++) {
-            echo "<tr>";
 
-            $nColumn = PHPExcel_Cell::columnIndexFromString(
-                $sheet->getHighestColumn());
+        /**
+         * Объявление значений
+         */
 
-            for ($j = 0; $j < $nColumn; $j++) {
-                $value = $sheet->getCellByColumnAndRow($j, $i)->getValue();
-                echo "<td>$value</td>";
+        $district_type = "Муниципальный район";
+        $parameter_name = "Продукция сельского хозяйства (в фактически действовавших ценах), тысяча рублей";
+
+        $dataTime = new \DateTime();
+
+        foreach ($arrParse as $itemParse) {
+
+            foreach ($itemParse['year'] as  $year) {
+
+                //Получаем менеджер БД - Entity Manager
+                $em = $this->getDoctrine()->getManager();
+
+                //Создаем экземпляр модели
+                $district = new District;
+                //Задаем значение полей
+                $district->setDistrictName($itemParse['district_name']);
+                $district->setDistrictType($district_type);
+                $district->setYear($year);
+                $district->setParameterName($parameter_name);
+                $district->setParameterValue($itemParse['parameter_value'][$year]);
+                $district->setCreated($dataTime);
+                $district->setUpdated($dataTime);
+
+                //Передаем менеджеру объект модели
+                $em->persist($district);
+                //Добавляем запись в таблицу
+                $em->flush();
             }
-
-            echo "</tr>";
         }
-        echo "</table>";*/
-
 
         return $this->render('AppMatrixMatrixBundle:Page:index.html.twig');
     }
