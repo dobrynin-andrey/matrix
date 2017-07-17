@@ -48,6 +48,10 @@ class District
     protected $parameter_value;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $parameter_type;
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $created;
@@ -156,6 +160,22 @@ class District
     /**
      * @return mixed
      */
+    public function getParameterType()
+    {
+        return $this->parameter_type;
+    }
+
+    /**
+     * @param mixed $parameter_type
+     */
+    public function setParameterType($parameter_type)
+    {
+        $this->parameter_type = $parameter_type;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getCreated()
     {
         return $this->created;
@@ -184,10 +204,5 @@ class District
     {
         $this->updated = $updated;
     }
-
-
-
-
-
 
 }

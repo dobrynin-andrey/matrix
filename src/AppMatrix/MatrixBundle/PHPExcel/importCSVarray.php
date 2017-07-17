@@ -5,7 +5,7 @@ namespace AppMatrix\MatrixBundle\PHPExcel;
 use PHPExcel;
 
 
-class importCSV extends PHPExcel {
+class importCSVarray extends PHPExcel {
 
     public function readDir ($path) {
         $files = scandir($path);
@@ -13,17 +13,21 @@ class importCSV extends PHPExcel {
         return $files;
     }
 
-    public function detectCSV ($file) {
-        $chk_ext = explode(".",$file);
-        if (strtolower(end($chk_ext)) == "csv") {
-            $arFiles["CORRECT"][] = $file;
-        } else {
-            $arFiles["INCORRECT"][] = $file;
+    public function detectCSV ($files) {
+        $arFiles = array(); // Массив файлов
+        foreach ($files as $file) {
+            $chk_ext = explode(".",$file);
+            if (strtolower(end($chk_ext)) == "csv") {
+                $arFiles["CORRECT"][] = $file;
+            } else {
+                $arFiles["INCORRECT"][] = $file;
+            }
         }
         return $arFiles;
     }
 
-    public function parseCSV ($file) {
+    public function parseCSV ($path, $correctFile) {
+        $file = $path . $correctFile; // Путь у файлу
         $openFile = fopen($file, "r"); // Прочитать файл
         $arMD = array();  // Объявить массив значений
         $i = 0; // Счетчик строк

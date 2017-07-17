@@ -1,0 +1,30 @@
+{# src/AppMatrix/MatrixBundle/Resources/views/Page/contact.html.twig #}
+{% extends 'AppMatrixMatrixBundle::layout.html.twig' %}
+
+{% block title %}Contact{% endblock%}
+
+{% block body %}
+    <header>
+        <h1>Form - Matrix</h1>
+    </header>
+
+    <p>Import your data in Matrix Application!</p>
+
+    {{ form_start(form, { 'action': path('AppMatrixMatrixBundle_form'), 'method': 'POST', 'attr': {'class': 'blogger'} }) }}
+
+    {% if app.request.get('result') == 'false' %}
+        <p style="color: #C82829">Загруженный файл не является .csv!</p>
+    {% elseif app.request.get('result') == 'true' %}
+        <p style="color: #4F8A10">Загрузка прошла успешно!</p>
+    {% endif %}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.parameter_type) }}
+    {{ form_row(form.parameter_name) }}
+    {{ form_row(form.file) }}
+
+    {{ form_rest(form) }}
+
+    <input type="submit" value="Загрузить" />
+
+{% endblock %}

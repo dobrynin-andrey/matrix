@@ -10,3 +10,8 @@ AppMatrixMatrixBundle_test:
     defaults: { _controller: "AppMatrixMatrixBundle:Page:test" }
     requirements:
          methods:  GET
+AppMatrixMatrixBundle_form:
+    path:  /form
+    defaults: { _controller: "AppMatrixMatrixBundle:Page:form" }
+    requirements:
+        methods:  GET|POST

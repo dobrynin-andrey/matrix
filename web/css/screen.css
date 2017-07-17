@@ -26,3 +26,13 @@ body { line-height: 1;font-family: Arial, Helvetica, sans-serif;font-size: 12px;
 .main-col p { line-height: 1.5em; margin-bottom: 20px; }
 
 #footer { border-top: 1px solid #ccc; clear: both; text-align: center; padding: 10px; color: #aaa; }
+.blogger-notice { text-align: center; padding: 10px; background: #DFF2BF; border: 1px solid; color: #4F8A10; margin-bottom: 10px; }
+form.blogger { font-size: 16px; }
+form.blogger div { clear: left; margin-bottom: 10px; }
+form.blogger label { float: left; margin-right: 10px; text-align: right; width: 100px; font-weight: bold; vertical-align: top; padding-bottom: 10px; }
+form.blogger input[type="text"],
+form.blogger input[type="email"]
+{ width: 500px; line-height: 26px; font-size: 20px; min-height: 26px; }
+form.blogger textarea { width: 500px; height: 150px; line-height: 26px; font-size: 20px; }
+form.blogger input[type="submit"] { margin-left: 110px; width: 508px; line-height: 26px; font-size: 20px; min-height: 26px; }
+form.blogger ul li { color: #ff0000; margin-bottom: 5px; }
