@@ -19,8 +19,10 @@
     {% endif %}
     {{ form_errors(form) }}
 
+    <input name="project" style="display: none;" value="{{ app.request.get('project') }}" type="text">
     {{ form_row(form.parameter_type) }}
     {{ form_row(form.parameter_name) }}
+    {{ form_row(form.district_type) }}
     {{ form_row(form.file) }}
 
     {{ form_rest(form) }}

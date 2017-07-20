@@ -11,6 +11,8 @@ class Form
 
     protected $parameter_name;
 
+    protected $district_type;
+
     protected $file;
 
     /**
@@ -48,6 +50,22 @@ class Form
     /**
      * @return mixed
      */
+    public function getDistrictType()
+    {
+        return $this->district_type;
+    }
+
+    /**
+     * @param mixed $district_type
+     */
+    public function setDistrictType($district_type)
+    {
+        $this->district_type = $district_type;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getFile()
     {
         return $this->file;
@@ -60,6 +78,8 @@ class Form
     {
         $this->file = $file;
     }
+
+
 
 
 

@@ -3,7 +3,7 @@ AppMatrixMatrixBundle_homepage:
     path:     /
     defaults: { _controller: "AppMatrixMatrixBundle:Page:index" }
     requirements:
-         methods:  GET
+         methods:  GET|POST
 
 AppMatrixMatrixBundle_test:
     path:     /test

@@ -3,18 +3,50 @@
 
 namespace AppMatrix\MatrixBundle\Controller;
 
+use AppMatrix\MatrixBundle\Classes\CreateProject;
+use AppMatrix\MatrixBundle\Classes\CreateDistrict;
+use AppMatrix\MatrixBundle\Classes\CreateParameter;
+use AppMatrix\MatrixBundle\Entity\FormProject;
+use AppMatrix\MatrixBundle\Entity\Parameter;
+use AppMatrix\MatrixBundle\Entity\Project;
 use AppMatrix\MatrixBundle\Entity\District;
+
+
 use AppMatrix\MatrixBundle\Entity\Form;
 use AppMatrix\MatrixBundle\Form\EnquiryType;
+use AppMatrix\MatrixBundle\Form\FormProjectType;
 use Symfony\Component\HttpFoundation\Request;
 use AppMatrix\MatrixBundle\PHPExcel\importCSV;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class PageController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->render('AppMatrixMatrixBundle:Page:index.html.twig');
+
+        $enquiry = new FormProject();
+
+        $form = $this->createForm(FormProjectType::class, $enquiry);
+
+        if ($request->isMethod($request::METHOD_POST)) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+
+                $project_name = $request->request->get('form_homepage')['project_name'];
+
+                $project = new CreateProject;
+                $addProject = $project->Add($this, $project_name);
+
+                return $this->redirect($this->generateUrl('AppMatrixMatrixBundle_form') . "?project=". $addProject);
+            }
+        }
+
+
+
+        return $this->render('AppMatrixMatrixBundle:Page:index.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
 
 
@@ -23,6 +55,9 @@ class PageController extends Controller
         /**
          * Форма отправки
          */
+
+        $project_id = (int)$request->query->get('project');
+        dump($project_id);
 
         $enquiry = new Form();
 
@@ -33,73 +68,50 @@ class PageController extends Controller
 
             if ($form->isValid()) {
 
-                // Получаем имя параметра
-                $parameter_name = $request->request->get('app_matrix_matrix_bundle_enquiry_type')['parameter_name'];
-                $parameter_type = $request->request->get('app_matrix_matrix_bundle_enquiry_type')['parameter_type'];
-                $file = $request->files->get('app_matrix_matrix_bundle_enquiry_type')['file']->getClientOriginalName();
-                $path = $request->files->get('app_matrix_matrix_bundle_enquiry_type')['file']->getRealPath();
 
                 dump($request);
+                // Получаем значения параметров
+                $parameter_name = $request->request->get('form_add')['parameter_name'];
+                $parameter_type = $request->request->get('form_add')['parameter_type'];
+                $district_type = $request->request->get('form_add')['district_type'];
+                $project_id = $request->request->get('project');
+                dump($project_id);
+                $file = $request->files->get('form_add')['file']->getClientOriginalName();
+                $path = $request->files->get('form_add')['file']->getRealPath();
 
-
-                dump($parameter_name);
-                dump($parameter_type);
-                dump($file);
-                dump($path);
-
-                //$root = str_replace("app", "", $this->get('kernel')->getRootDir()); // Путь от корня
-                //$path =  $root . 'upload/import_csv/'; // Путь к дирректории импорта
-
-                $phpCSV = new importCSV; // Создание объекта
-
-                $correctFiles = $phpCSV->detectCSV($file); // Проверка на корректность .csv
+                // Создание объекта
+                $phpCSV = new importCSV;
+                // Проверка на корректность .csv
+                $correctFiles = $phpCSV->detectCSV($file);
 
                 if (!empty($correctFiles['CORRECT'])) {
 
-                    $arrParse = $phpCSV->parseCSV($path); // Парсинг корректных файлов
+                    // Парсинг корректных файлов
+                    $arrParse = $phpCSV->parseCSV($path);
 
-                    dump($arrParse);
                     /**
                      * Предварительная очистка таблицы
                      */
-                    $em = $this->getDoctrine()->getManager();
+                    /*$em = $this->getDoctrine()->getManager();
                     $connection = $em->getConnection();
                     $platform   = $connection->getDatabasePlatform();
-                    $connection->executeUpdate($platform->getTruncateTableSQL('district', true /* whether to cascade */));
+                    $connection->executeUpdate($platform->getTruncateTableSQL('district', true /* whether to cascade *//*));*/
 
 
-                    /**
-                     * Объявление значений
-                     */
-
-                    $district_type = "Муниципальный район";
-                    //$parameter_name = "Продукция сельского хозяйства (в фактически действовавших ценах), тысяча рублей";
-
-                    $dataTime = new \DateTime();
-
+                    // Перебор распарсенных данных
                     foreach ($arrParse as $itemParse) {
 
                         foreach ($itemParse['year'] as  $year) {
 
-                            //Получаем менеджер БД - Entity Manager
-                            $em = $this->getDoctrine()->getManager();
+                            $district = new CreateDistrict;
+                            $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
+                            dump($addDistrict);
+                            dump((int)$addDistrict);
 
-                            //Создаем экземпляр модели
-                            $district = new District;
-                            //Задаем значение полей
-                            $district->setDistrictName($itemParse['district_name']);
-                            $district->setDistrictType($district_type);
-                            $district->setYear($year);
-                            $district->setParameterName($parameter_name);
-                            $district->setParameterValue($itemParse['parameter_value'][$year]);
-                            $district->setParameterType($parameter_type);
-                            $district->setCreated($dataTime);
-                            $district->setUpdated($dataTime);
+                            $parameter = new CreateParameter;
+                            $addProject = $parameter->Add($this, (int)$project_id, (int)$addDistrict, $parameter_name, $itemParse['parameter_value'][$year], $parameter_type, $year);
+                            dump($addProject);
 
-                            //Передаем менеджеру объект модели
-                            $em->persist($district);
-                            //Добавляем запись в таблицу
-                            $em->flush();
                         }
                     }
 
@@ -114,7 +126,8 @@ class PageController extends Controller
 
                 // Redirect - This is important to prevent users re-posting
                 // the form if they refresh the page
-                return $this->redirect($this->generateUrl('AppMatrixMatrixBundle_form') . "?result=". $result);
+
+                return $this->redirect($this->generateUrl('AppMatrixMatrixBundle_form') . "?project=" . $project_id . "result=". $result);
             }
         }
 

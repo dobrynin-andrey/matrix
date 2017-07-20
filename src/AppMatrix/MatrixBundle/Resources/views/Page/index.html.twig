@@ -2,5 +2,19 @@
 {% extends 'AppMatrixMatrixBundle::layout.html.twig' %}
 
 {% block body %}
-    Blog homepage
+    <header>
+        <h1>Form - Matrix</h1>
+    </header>
+
+    <p>Import your data in Matrix Application!</p>
+
+    {{ form_start(form, { 'action': path('AppMatrixMatrixBundle_homepage'), 'method': 'POST', 'attr': {'class': 'blogger'} }) }}
+
+    {{ form_row(form.project_name) }}
+
+
+    {{ form_rest(form) }}
+
+    <input type="submit" value="Далее" />
+
 {% endblock %}

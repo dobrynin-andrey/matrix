@@ -3,9 +3,11 @@
 // src/AppMatrix/MatrixBundle/Entity/Parameter.php
 
 namespace AppMatrix\MatrixBundle\Entity;
+use AppMatrix\MatrixBundle\Entity\District;
+use AppMatrix\MatrixBundle\Entity\Project;
 
 use Doctrine\ORM\Mapping as ORM;
-use AppMatrix\MatrixBundle\Entity\Project;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="parameter")
@@ -24,11 +26,17 @@ class Parameter
 
     /**
      * One Parameter has One Project.
-     * @ORM\OneToOne(targetEntity="Project")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
-     * @ORM\Column(type="string")
+     * @ORM\OneToOne(targetEntity="AppMatrix\MatrixBundle\Entity\Project")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    protected $project_id;
+    protected $project;
+
+    /**
+     * One Parameter has One District.
+     * @ORM\OneToOne(targetEntity="AppMatrix\MatrixBundle\Entity\District")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    protected $district;
 
     /**
      * @ORM\Column(type="string")
@@ -79,17 +87,33 @@ class Parameter
     /**
      * @return Project
      */
-    public function getProjectId()
+    public function getProject()
     {
-        return $this->project_id;
+        return $this->project;
     }
 
     /**
-     * @param mixed $project_id
+     * @param mixed Project $project
      */
-    public function setProjectId(Project $project_id)
+    public function setProject(Project $project)
     {
-        $this->project_id = $project_id;
+        $this->project = $project;
+    }
+
+    /**
+     * @return District
+     */
+    public function getDistrict()
+    {
+        return $this->district;
+    }
+
+    /**
+     * @param mixed District $district
+     */
+    public function setDistrict(District $district)
+    {
+        $this->district = $district;
     }
 
     /**
@@ -187,6 +211,8 @@ class Parameter
     {
         $this->updated = $updated;
     }
+
+
 
 
 

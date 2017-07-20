@@ -16,7 +16,7 @@ class EnquiryType extends AbstractType
     {
 
         $builder->add('parameter_type', ChoiceType::class, array(
-            'label' => 'Выберите тип параметра',
+            'label' => 'Выберите тип параметра: ',
             'choices'  => array(
                 'Ресурсы и затраты - Внешние' => 'Ресурсы и затраты - Внешние',
                 'Ресурсы и затраты - Внутренние' => 'Ресурсы и затраты - Внутренние',
@@ -28,12 +28,18 @@ class EnquiryType extends AbstractType
         ));
         $builder->add('parameter_name', TextType::class,
                 array(
-                    'label' => 'Введите название параметра'
+                    'label' => 'Введите название параметра: '
                 )
             );
+
+        $builder->add('district_type', TextType::class,
+            array(
+                'label' => 'Введите тип района: '
+            )
+        );
         $builder->add('file', FileType::class,
                 array(
-                    'label' => 'Загрузите файл .csv с данными параметра',
+                    'label' => 'Загрузите файл .csv с данными параметра: ',
                 )
             );
     }
@@ -45,6 +51,6 @@ class EnquiryType extends AbstractType
 
     public function getBlockPrefix()
     {
-        return 'app_matrix_matrix_bundle_enquiry_type';
+        return 'form_add';
     }
 }
