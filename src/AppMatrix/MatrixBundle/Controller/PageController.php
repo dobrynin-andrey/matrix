@@ -18,6 +18,7 @@ use AppMatrix\MatrixBundle\Form\FormProjectType;
 use Symfony\Component\HttpFoundation\Request;
 use AppMatrix\MatrixBundle\PHPExcel\importCSV;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PageController extends Controller
 {
@@ -38,7 +39,8 @@ class PageController extends Controller
                 $project = new CreateProject;
                 $addProject = $project->Add($this, $project_name);
 
-                return $this->redirect($this->generateUrl('AppMatrixMatrixBundle_form') . "?project=". $addProject);
+                return $this->redirectToRoute('AppMatrixMatrixBundle_project_form', array('id' => $addProject->getId()));
+                //return $this->redirect($this->generateUrl('AppMatrixMatrixBundle_form') . "?project=". $addProject);
             }
         }
 
@@ -50,34 +52,36 @@ class PageController extends Controller
     }
 
 
-    public function formAction(Request $request) {
+    public function formAction(Project $project, Request $request) {
 
         /**
          * Форма отправки
          */
 
-        $project_id = (int)$request->query->get('project');
-        dump($project_id);
 
         $enquiry = new Form();
+        $enquiry->setProjectId($project->getId());
+
+        dump($project);
+        dump($project->getId());
 
         $form = $this->createForm(EnquiryType::class, $enquiry);
+        $form->handleRequest($request);
 
-        if ($request->isMethod($request::METHOD_POST)) {
-            $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
 
             if ($form->isValid()) {
 
-
-                dump($request);
                 // Получаем значения параметров
-                $parameter_name = $request->request->get('form_add')['parameter_name'];
-                $parameter_type = $request->request->get('form_add')['parameter_type'];
-                $district_type = $request->request->get('form_add')['district_type'];
-                $project_id = $request->request->get('project');
-                dump($project_id);
-                $file = $request->files->get('form_add')['file']->getClientOriginalName();
-                $path = $request->files->get('form_add')['file']->getRealPath();
+                $parameter_name = $enquiry->getParameterName();
+                $parameter_type = $enquiry->getParameterType();
+                $district_type = $enquiry->getDistrictType();
+                //$project_id = $enquiry->getProjectId();
+                $file = $enquiry->getFile()->getClientOriginalName();
+                $path = $enquiry->getFile()->getRealPath();
+
+
+                //$entity = $this->get('doctrine.orm.entity_manager')->getRepository('AppMatrixMatrixBundle:Project')->find($project_id);
 
                 // Создание объекта
                 $phpCSV = new importCSV;
@@ -89,55 +93,49 @@ class PageController extends Controller
                     // Парсинг корректных файлов
                     $arrParse = $phpCSV->parseCSV($path);
 
-                    /**
-                     * Предварительная очистка таблицы
-                     */
-                    /*$em = $this->getDoctrine()->getManager();
-                    $connection = $em->getConnection();
-                    $platform   = $connection->getDatabasePlatform();
-                    $connection->executeUpdate($platform->getTruncateTableSQL('district', true /* whether to cascade *//*));*/
-
-
                     // Перебор распарсенных данных
                     foreach ($arrParse as $itemParse) {
 
+                        // Запись в табилцу "district"
+                        $district = new CreateDistrict;
+                        $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
+
                         foreach ($itemParse['year'] as  $year) {
 
-                            $district = new CreateDistrict;
-                            $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
-                            dump($addDistrict);
-                            dump((int)$addDistrict);
-
+                            // Запись в табилцу "parameter"
                             $parameter = new CreateParameter;
-                            $addProject = $parameter->Add($this, (int)$project_id, (int)$addDistrict, $parameter_name, $itemParse['parameter_value'][$year], $parameter_type, $year);
-                            dump($addProject);
+                            $addParameter = $parameter->Add($this, $project, $addDistrict, $parameter_name, $itemParse['parameter_value'][$year], $parameter_type, $year);
 
                         }
                     }
-
-                    $result = 'true';
+                    if (!empty($addParameter)){
+                        $this->addFlash('success', 'Загрузка прошла успешно!');
+                    } else {
+                        $this->addFlash('unsuccess', 'Загрузка прошла неудачно!');
+                    }
                 } else {
-                    $result = 'false';
+                    $this->addFlash('error', 'Загруженный файл не является .csv!');
                 }
 
 
-
-                // Perform some action, such as sending an email
-
-                // Redirect - This is important to prevent users re-posting
-                // the form if they refresh the page
-
-                return $this->redirect($this->generateUrl('AppMatrixMatrixBundle_form') . "?project=" . $project_id . "result=". $result);
+                return $this->redirectToRoute('AppMatrixMatrixBundle_project_form', array('id' => $project->getId()));
             }
         }
 
+        $em = $this->getDoctrine()->getManager();
+
+        $project = $em->getRepository('AppMatrixMatrixBundle:Project')->find($project->getId());
+
+        if (!$project) {
+            throw $this->createNotFoundException('Не найден не один проект');
+        }
+
         return $this->render('AppMatrixMatrixBundle:Page:form.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'project'      => $project,
         ));
 
     }
-
-
 
     public function testAction()
     {

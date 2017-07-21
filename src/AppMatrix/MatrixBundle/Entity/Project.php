@@ -38,6 +38,14 @@ class Project
     protected $updated;
 
     /**
+     * @return mixed|string
+     */
+    public function __toString()
+    {
+        return (strlen($this->getProjectName())> 0) ? $this->getProjectName() : 'New project';
+    }
+
+    /**
      * @return mixed
      */
     public function getId()

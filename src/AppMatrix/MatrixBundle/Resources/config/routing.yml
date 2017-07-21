@@ -15,3 +15,9 @@ AppMatrixMatrixBundle_form:
     defaults: { _controller: "AppMatrixMatrixBundle:Page:form" }
     requirements:
         methods:  GET|POST
+AppMatrixMatrixBundle_project_form:
+    path:  /{id}/form
+    methods:  ['GET', 'POST']
+    defaults: { _controller: "AppMatrixMatrixBundle:Page:form" }
+    requirements:
+       #id:  '\d+'

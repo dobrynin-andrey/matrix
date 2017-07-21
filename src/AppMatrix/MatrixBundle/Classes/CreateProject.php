@@ -4,7 +4,7 @@ namespace AppMatrix\MatrixBundle\Classes;
 
 use AppMatrix\MatrixBundle\Entity\Project;
 
-class CreateProject {
+class CreateProject extends Project{
 
     public function Add ($obg, $request) {
 
@@ -26,6 +26,6 @@ class CreateProject {
 
 
 
-        return $project->getId();
+        return $project;
     }
 }

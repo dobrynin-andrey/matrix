@@ -36,3 +36,9 @@ form.blogger input[type="email"]
 form.blogger textarea { width: 500px; height: 150px; line-height: 26px; font-size: 20px; }
 form.blogger input[type="submit"] { margin-left: 110px; width: 508px; line-height: 26px; font-size: 20px; min-height: 26px; }
 form.blogger ul li { color: #ff0000; margin-bottom: 5px; }
+form.blogger select {font-size: 20px; }
+.project_sidebar {margin-bottom: 10px;}
+.project_sidebar b {font-weight: 600}
+.project_title {font-size: 17px; font-weight: 800}
+.project_name, .project_value {display: inline-block}
+.project_row {margin-top: 10px}

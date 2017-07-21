@@ -10,7 +10,8 @@
 /vendor/
 /bin/
 /composer.phar
-.idea/
-*.csv
-*.xls
-*.xlsx
+.idea
+*.txt
+*.log
+*.lock
+

@@ -26,15 +26,16 @@ class Parameter
 
     /**
      * One Parameter has One Project.
-     * @ORM\OneToOne(targetEntity="AppMatrix\MatrixBundle\Entity\Project")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     *
+     * @ORM\ManyToOne(targetEntity="AppMatrix\MatrixBundle\Entity\Project")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      */
     protected $project;
 
     /**
      * One Parameter has One District.
-     * @ORM\OneToOne(targetEntity="AppMatrix\MatrixBundle\Entity\District")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="AppMatrix\MatrixBundle\Entity\District")
+     * @ORM\JoinColumn(name="district_id", referencedColumnName="id")
      */
     protected $district;
 
@@ -68,8 +69,12 @@ class Parameter
      */
     protected $updated;
 
+
+
     /**
-     * @return mixed
+     * Get id
+     *
+     * @return integer
      */
     public function getId()
     {
@@ -77,47 +82,23 @@ class Parameter
     }
 
     /**
-     * @param mixed $id
+     * Set parameterName
+     *
+     * @param string $parameterName
+     *
+     * @return Parameter
      */
-    public function setId($id)
+    public function setParameterName($parameterName)
     {
-        $this->id = $id;
+        $this->parameter_name = $parameterName;
+
+        return $this;
     }
 
     /**
-     * @return Project
-     */
-    public function getProject()
-    {
-        return $this->project;
-    }
-
-    /**
-     * @param mixed Project $project
-     */
-    public function setProject(Project $project)
-    {
-        $this->project = $project;
-    }
-
-    /**
-     * @return District
-     */
-    public function getDistrict()
-    {
-        return $this->district;
-    }
-
-    /**
-     * @param mixed District $district
-     */
-    public function setDistrict(District $district)
-    {
-        $this->district = $district;
-    }
-
-    /**
-     * @return mixed
+     * Get parameterName
+     *
+     * @return string
      */
     public function getParameterName()
     {
@@ -125,15 +106,23 @@ class Parameter
     }
 
     /**
-     * @param mixed $parameter_name
+     * Set parameterValue
+     *
+     * @param string $parameterValue
+     *
+     * @return Parameter
      */
-    public function setParameterName($parameter_name)
+    public function setParameterValue($parameterValue)
     {
-        $this->parameter_name = $parameter_name;
+        $this->parameter_value = $parameterValue;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * Get parameterValue
+     *
+     * @return string
      */
     public function getParameterValue()
     {
@@ -141,15 +130,23 @@ class Parameter
     }
 
     /**
-     * @param mixed $parameter_value
+     * Set parameterType
+     *
+     * @param string $parameterType
+     *
+     * @return Parameter
      */
-    public function setParameterValue($parameter_value)
+    public function setParameterType($parameterType)
     {
-        $this->parameter_value = $parameter_value;
+        $this->parameter_type = $parameterType;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * Get parameterType
+     *
+     * @return string
      */
     public function getParameterType()
     {
@@ -157,15 +154,23 @@ class Parameter
     }
 
     /**
-     * @param mixed $parameter_type
+     * Set year
+     *
+     * @param string $year
+     *
+     * @return Parameter
      */
-    public function setParameterType($parameter_type)
+    public function setYear($year)
     {
-        $this->parameter_type = $parameter_type;
+        $this->year = $year;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * Get year
+     *
+     * @return string
      */
     public function getYear()
     {
@@ -173,15 +178,23 @@ class Parameter
     }
 
     /**
-     * @param mixed $year
+     * Set created
+     *
+     * @param \DateTime $created
+     *
+     * @return Parameter
      */
-    public function setYear($year)
+    public function setCreated($created)
     {
-        $this->year = $year;
+        $this->created = $created;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * Get created
+     *
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -189,15 +202,23 @@ class Parameter
     }
 
     /**
-     * @param mixed $created
+     * Set updated
+     *
+     * @param \DateTime $updated
+     *
+     * @return Parameter
      */
-    public function setCreated($created)
+    public function setUpdated($updated)
     {
-        $this->created = $created;
+        $this->updated = $updated;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * Get updated
+     *
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -205,16 +226,50 @@ class Parameter
     }
 
     /**
-     * @param mixed $updated
+     * Set project
+     *
+     * @param \AppMatrix\MatrixBundle\Entity\Project $project
+     *
+     * @return Parameter
      */
-    public function setUpdated($updated)
+    public function setProject(\AppMatrix\MatrixBundle\Entity\Project $project = null)
     {
-        $this->updated = $updated;
+        $this->project = $project;
+
+        return $this;
     }
 
+    /**
+     * Get project
+     *
+     * @return \AppMatrix\MatrixBundle\Entity\Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
 
+    /**
+     * Set district
+     *
+     * @param \AppMatrix\MatrixBundle\Entity\District $district
+     *
+     * @return Parameter
+     */
+    public function setDistrict(\AppMatrix\MatrixBundle\Entity\District $district = null)
+    {
+        $this->district = $district;
 
+        return $this;
+    }
 
-
-
+    /**
+     * Get district
+     *
+     * @return \AppMatrix\MatrixBundle\Entity\District
+     */
+    public function getDistrict()
+    {
+        return $this->district;
+    }
 }

@@ -7,6 +7,8 @@ namespace AppMatrix\MatrixBundle\Entity;
 
 class Form
 {
+    protected $project_id;
+
     protected $parameter_type;
 
     protected $parameter_name;
@@ -14,6 +16,22 @@ class Form
     protected $district_type;
 
     protected $file;
+
+    /**
+     * @return mixed
+     */
+    public function getProjectId()
+    {
+        return $this->project_id;
+    }
+
+    /**
+     * @param mixed $project_id
+     */
+    public function setProjectId($project_id)
+    {
+        $this->project_id = $project_id;
+    }
 
     /**
      * @return mixed
@@ -78,8 +96,6 @@ class Form
     {
         $this->file = $file;
     }
-
-
 
 
 

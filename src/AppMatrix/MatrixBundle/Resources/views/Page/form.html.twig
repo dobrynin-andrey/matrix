@@ -10,16 +10,17 @@
 
     <p>Import your data in Matrix Application!</p>
 
-    {{ form_start(form, { 'action': path('AppMatrixMatrixBundle_form'), 'method': 'POST', 'attr': {'class': 'blogger'} }) }}
+    {{ form_start(form, { 'attr': {'class': 'blogger'} }) }}
 
-    {% if app.request.get('result') == 'false' %}
-        <p style="color: #C82829">Загруженный файл не является .csv!</p>
-    {% elseif app.request.get('result') == 'true' %}
-        <p style="color: #4F8A10">Загрузка прошла успешно!</p>
-    {% endif %}
+    {% for label, messages in app.session.flashbag.all %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     {{ form_errors(form) }}
-
-    <input name="project" style="display: none;" value="{{ app.request.get('project') }}" type="text">
+    {{ form_row(form.project_id) }}
     {{ form_row(form.parameter_type) }}
     {{ form_row(form.parameter_name) }}
     {{ form_row(form.district_type) }}
@@ -29,4 +30,22 @@
 
     <input type="submit" value="Загрузить" />
 
+{% endblock %}
+
+{% block sidebar %}
+    <div class="project_sidebar">
+        <div class="project_title">Текущий проект</div>
+        <div class="project_row">
+            <div class="project_name">Имя: </div>
+            <div class="project_value"><b>{{ project.projectName }}</b></div>
+        </div>
+        <div class="project_row">
+            <div class="project_name">Дата создания: </div>
+            <div class="project_value"><b>{{ project.created|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
+        </div>
+        <div class="project_row">
+            <div class="project_name">Дата изменения: </div>
+            <div class="project_value"><b>{{ project.updated|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
+        </div>
+    </div>
 {% endblock %}

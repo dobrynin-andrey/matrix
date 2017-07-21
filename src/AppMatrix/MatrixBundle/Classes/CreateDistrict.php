@@ -4,7 +4,7 @@ namespace AppMatrix\MatrixBundle\Classes;
 
 use AppMatrix\MatrixBundle\Entity\District;
 
-class CreateDistrict {
+class CreateDistrict extends District{
 
     public function Add ($obg, $district_name, $district_type) {
 
@@ -27,6 +27,6 @@ class CreateDistrict {
 
 
 
-        return $district->getId();
+        return $district;
     }
 }

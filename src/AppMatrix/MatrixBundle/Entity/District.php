@@ -43,6 +43,14 @@ class District
     protected $updated;
 
     /**
+     * @return mixed|string
+     */
+//    public function __toString()
+//    {
+//        return (strlen($this->getDistrictName())> 0) ? $this->getDistrictName() : 'New district';
+//    }
+
+    /**
      * @return mixed
      */
     public function getId()

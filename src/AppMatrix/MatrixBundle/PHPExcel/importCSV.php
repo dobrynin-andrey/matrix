@@ -3,7 +3,7 @@
 namespace AppMatrix\MatrixBundle\PHPExcel;
 
 use PHPExcel;
-
+use Symfony\Component\HttpFoundation\Request;
 
 class importCSV extends PHPExcel {
 
@@ -36,6 +36,7 @@ class importCSV extends PHPExcel {
                  */
                 $coding = mb_detect_encoding($itemData);
                 if (!in_array($coding, $arCoding)) {
+                    $this->addFlash('coding', "Кодировка не соответствует: UTF-8, ASCII или Windows-1251 - в строке №: " . $i . " в ячейке №: " . $k);
                     $arrErrors["coding"][] = "Кодировка не соответствует: UTF-8, ASCII или Windows-1251 - в строке №: " . $i . " в ячейке №: " . $k;
                 }
 
