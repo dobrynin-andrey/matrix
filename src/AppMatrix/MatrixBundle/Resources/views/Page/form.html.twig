@@ -5,10 +5,10 @@
 
 {% block body %}
     <header>
-        <h1>Form - Matrix</h1>
+        <h1>Загрузка новых параметров</h1>
     </header>
 
-    <p>Import your data in Matrix Application!</p>
+    <p>Внесите данные:</p>
 
     {{ form_start(form, { 'attr': {'class': 'blogger'} }) }}
 
@@ -24,6 +24,7 @@
     {{ form_row(form.parameter_type) }}
     {{ form_row(form.parameter_name) }}
     {{ form_row(form.district_type) }}
+    <p>Загрузите файл .csv с данными параметра. Пример файла импорта: <a target="_blank" rel="nofollow" href="{{ asset('upload/import_csv/Productions-sh_standart.csv') }}">Посмотреть</a></p>
     {{ form_row(form.file) }}
 
     {{ form_rest(form) }}
@@ -34,18 +35,41 @@
 
 {% block sidebar %}
     <div class="project_sidebar">
-        <div class="project_title">Текущий проект</div>
+        <div class="project_title">Текущий проект:</div>
         <div class="project_row">
             <div class="project_name">Имя: </div>
-            <div class="project_value"><b>{{ project.projectName }}</b></div>
+            <div class="project_value"><b>{{ projects.projectName }}</b></div>
         </div>
         <div class="project_row">
             <div class="project_name">Дата создания: </div>
-            <div class="project_value"><b>{{ project.created|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
+            <div class="project_value"><b>{{ projects.created|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
         </div>
         <div class="project_row">
             <div class="project_name">Дата изменения: </div>
-            <div class="project_value"><b>{{ project.updated|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
+            <div class="project_value"><b>{{ projects.updated|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
         </div>
     </div>
+{% endblock %}
+
+{% block table_project %}
+{#<p>Уже загруженные параметры. Всего: {{ projects | length }}</p>#}
+    Тип параметра:
+<table class="table_project">
+    <tr>
+        <th>№</th>
+        <th>Название параметра</th>
+        <th>Значение параметра</th>
+        <th>Год</th>
+        <th>Дата создания</th>
+        <th>Дата изменения</th>
+    </tr>
+    {#{% for itemProject in projects %}#}
+        {#<tr>#}
+            {#<td>{{ loop.index }}</td>#}
+            {#<td><a href="/{{ itemProject.id }}/form">{{ itemProject.projectName }}</a></td>#}
+            {#<td>{{ itemProject.created | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>#}
+            {#<td>{{ itemProject.updated | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>#}
+        {#</tr>#}
+    {#{% endfor %}#}
+</table>
 {% endblock %}

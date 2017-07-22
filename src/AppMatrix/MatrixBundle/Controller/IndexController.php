@@ -45,9 +45,19 @@ class IndexController extends Controller
         }
 
 
+        $em = $this->getDoctrine()->getManager();
+
+        $project = $em->getRepository('AppMatrixMatrixBundle:Project')->findAll();
+
+        if (!$project) {
+            throw $this->createNotFoundException('Не найден не один проект');
+        }
+
+        dump($project);
 
         return $this->render('AppMatrixMatrixBundle:Page:index.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'projects' => $project
         ));
     }
 

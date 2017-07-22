@@ -19,7 +19,7 @@ class EnquiryType extends AbstractType
 
         $builder
             ->add('parameter_type', ChoiceType::class, array(
-                'label' => 'Выберите тип параметра: ',
+                'label' => 'Тип параметра: ',
                 'choices'  => array(
                     'Ресурсы и затраты - Внешние' => 'Ресурсы и затраты - Внешние',
                     'Ресурсы и затраты - Внутренние' => 'Ресурсы и затраты - Внутренние',
@@ -30,17 +30,17 @@ class EnquiryType extends AbstractType
             ))
             ->add('parameter_name', TextType::class,
                 array(
-                    'label' => 'Введите название параметра: '
+                    'label' => 'Название параметра: '
                 )
             )
             ->add('district_type', TextType::class,
                 array(
-                    'label' => 'Введите тип района: '
+                    'label' => 'Тип района: '
                 )
             )
             ->add('file', FileType::class,
                 array(
-                    'label' => 'Загрузите файл .csv с данными параметра: ',
+                    'label' => 'Файл: ',
                 )
             )
             ->add('project_id', HiddenType::class);

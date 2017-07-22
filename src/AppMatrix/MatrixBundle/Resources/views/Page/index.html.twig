@@ -3,10 +3,10 @@
 
 {% block body %}
     <header>
-        <h1>Form - Matrix</h1>
+        <h1>Создать новый проект:</h1>
     </header>
 
-    <p>Import your data in Matrix Application!</p>
+    <p>Введите название нового прокта</p>
 
     {{ form_start(form, { 'action': path('AppMatrixMatrixBundle_homepage'), 'method': 'POST', 'attr': {'class': 'blogger'} }) }}
 
@@ -19,24 +19,21 @@
 
 {% endblock %}
 {% block table_project %}
+    <p>Уже созданные прокты. Всего: {{  projects | length }}</p>
     <table class="table_project">
         <tr>
             <th>№</th>
-            <th>Название</th>
+            <th>Название проекта</th>
             <th>Дата создания</th>
             <th>Дата изменения</th>
         </tr>
+    {% for itemProject in projects %}
         <tr>
-            <td>1</td>
-            <td><a href="#">Тест Тестовый тест теста тест</a></td>
-            <td>22.07.2017 : 15:31</td>
-            <td>22.07.2017 : 15:37</td>
+            <td>{{ loop.index }}</td>
+            <td><a href="/{{ itemProject.id }}/form">{{ itemProject.projectName }}</a></td>
+            <td>{{ itemProject.created | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
+            <td>{{ itemProject.updated | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
         </tr>
-        <tr>
-            <td>2</td>
-            <td><a href="#">Тест 2</a></td>
-            <td>22.07.2017 : 15:31</td>
-            <td>22.07.2017 : 15:37</td>
-        </tr>
+    {% endfor %}
     </table>
 {% endblock %}

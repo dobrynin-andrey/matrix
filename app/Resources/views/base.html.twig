@@ -35,20 +35,23 @@
         </hgroup>
     </header>
 
-    <section class="main-col">
+    <section class="main-col {% if (app.request.requestUri == "/") %}main-col__full{% endif %}">
         {% block body %}{% endblock %}
     </section>
-    <aside class="sidebar">
-        {% block sidebar %}{% endblock %}
-    </aside>
 
-    <section class="main-col main-col_project">
+    {% if (app.request.requestUri != "/") %}
+        <aside class="sidebar">
+            {% block sidebar %}{% endblock %}
+        </aside>
+    {% endif %}
+
+    <section class="main-col main-col_project main-col__full">
         {% block table_project %}{% endblock %}
     </section>
 
     <div id="footer">
         {% block footer %}
-            Symfony2 matrix application - created by <a href="https://github.com/dobrynin-andrey">A. Dobrynin</a>
+            Symfony2 matrix application - created by <a target="_blank" rel="nofollow" href="https://github.com/dobrynin-andrey">A. Dobrynin</a>
         {% endblock %}
     </div>
 </section>

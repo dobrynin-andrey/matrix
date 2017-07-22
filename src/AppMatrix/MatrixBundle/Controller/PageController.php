@@ -33,8 +33,6 @@ class PageController extends Controller
         $enquiry = new Form();
         $enquiry->setProjectId($project->getId());
 
-        dump($project);
-        dump($project->getId());
 
         $form = $this->createForm(EnquiryType::class, $enquiry);
         $form->handleRequest($request);
@@ -95,15 +93,36 @@ class PageController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $project = $em->getRepository('AppMatrixMatrixBundle:Project')->find($project->getId());
+        $projects = $em->getRepository('AppMatrixMatrixBundle:Project')->find($project->getId());
 
-        if (!$project) {
-            throw $this->createNotFoundException('Не найден не один проект');
+        if (!$projects) {
+            throw $this->createNotFoundException('Не найден не один проект!');
+        }
+        $parameters = $em->getRepository('AppMatrixMatrixBundle:Parameter')->findBy(
+            array('project' => $project->getId()),
+            array('parameter_name' => 'ASC')
+        );
+//        if (!$parameters) {
+//            throw $this->createNotFoundException('Не найден не один параметр!');
+//        }
+        dump($parameters);
+
+     /*   $districts = $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
+            array('p' => 'Keyboard'),
+            array('price' => 'ASC')
+        );
+
+        if (!$districts) {
+            throw $this->createNotFoundException('Не найден не один район!');
         }
 
+        dump($districts);
+*/
         return $this->render('AppMatrixMatrixBundle:Page:form.html.twig', array(
             'form' => $form->createView(),
-            'project'      => $project,
+            'projects'      => $projects,
+            'parameters'      => $parameters,
+            //'districts'      => $districts,
         ));
 
     }
