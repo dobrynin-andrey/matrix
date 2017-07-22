@@ -14,4 +14,7 @@
 *.txt
 *.log
 *.lock
+*.xls
+*.xlsx
+*.csv
 
