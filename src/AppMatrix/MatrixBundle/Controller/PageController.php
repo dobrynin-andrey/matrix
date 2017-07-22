@@ -22,35 +22,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PageController extends Controller
 {
-    public function indexAction(Request $request)
-    {
-
-        $enquiry = new FormProject();
-
-        $form = $this->createForm(FormProjectType::class, $enquiry);
-
-        if ($request->isMethod($request::METHOD_POST)) {
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
-
-                $project_name = $request->request->get('form_homepage')['project_name'];
-
-                $project = new CreateProject;
-                $addProject = $project->Add($this, $project_name);
-
-                return $this->redirectToRoute('AppMatrixMatrixBundle_project_form', array('id' => $addProject->getId()));
-                //return $this->redirect($this->generateUrl('AppMatrixMatrixBundle_form') . "?project=". $addProject);
-            }
-        }
-
-
-
-        return $this->render('AppMatrixMatrixBundle:Page:index.html.twig', array(
-            'form' => $form->createView()
-        ));
-    }
-
 
     public function formAction(Project $project, Request $request) {
 

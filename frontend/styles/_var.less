@@ -1,0 +1,242 @@
+/**
+ * Переменные
+ **/
+@borderRadius: 5px;
+
+@PTSans-Narrow: 'PT Sans Narrow';
+@Raleway: 'Raleway';
+@PTSerif: 'PT Serif Bold';
+
+@background-light-blue: #58d0ef;
+@numberBlue: #a2c9e2;
+@button: #6772e5;
+@yellow: #ffd617;
+@orange: #f3bc6c;
+@sepia: #946421;
+
+@number: #98b0ca;
+/****
+ * Миксины, разное
+ ****/
+
+.relative {
+    position: relative;
+}
+
+.sizing() {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.border-radius(@radius: @borderRadius) {
+    -webkit-border-radius: @radius;
+    border-radius: @radius;
+}
+
+.size(@width, @height: @width) {
+    width:  @width;
+    height: @height;
+}
+
+.relativePos(@top, @left:@top) {
+    position: relative;
+    top: @top;
+    left: @left;
+}
+
+.pseudo() {
+    content: '';
+    display: block;
+    position: absolute;
+}
+
+.menu-icon() {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 15px;
+    top: 13px;
+}
+
+.hover-opacity(@opacity: 0.75) {
+    cursor: pointer;
+
+    &:hover {
+        opacity: @opacity;
+    }
+}
+
+.transition(@property: all, @time: 0.3s) {
+    -webkit-transition: @property @time ease-in-out;
+            transition: @property @time ease-in-out;
+}
+
+.transition-transform(@time: 0.3s) {
+    -webkit-transition: -webkit-transform @time ease-in-out;
+        -ms-transition:     -ms-transform @time ease-in-out;
+            transition:         transform @time ease-in-out;
+}
+
+.transition-all(@time: 0.3s) {
+    -webkit-transition: all @time ease;
+    -ms-transition:     all @time ease;
+    transition:         all @time ease;
+}
+
+.transform(@propvalue) {
+    -webkit-transform: @propvalue;
+        -ms-transform: @propvalue;
+            transform: @propvalue;
+}
+
+.rotate(@degree) {
+    -webkit-transform: rotate(@degree);
+        -ms-transform: rotate(@degree);
+            transform: rotate(@degree);
+}
+
+.scale(@scale) {
+    -webkit-transform: scale(@scale);
+        -ms-transform: scale(@scale);
+            transform: scale(@scale);
+}
+
+.transform-origin(@x, @y) {
+    -webkit-transform-origin: @x @y;
+        -ms-transform-origin: @x @y;
+            transform-origin: @x @y;
+}
+
+.placeholder(@color){
+
+}
+
+/* =============================================================================
+   Screen size variables
+   ========================================================================== */
+
+@screen-iphone:                    320px;
+@screen-mobile-360:                360px;
+@screen-mobile:                    480px;
+@screen-mobile-540:                540px;
+@screen-mobile-640:                640px;
+@screen-mobile-688:                688px;
+@screen-mobile-712:                712px;
+@screen-mobile-755:                755px;
+@screen-mobile-767:                768px;
+@screen-ipad-p:                    768px;
+@screen-860:                       860px;
+@screen-960:                       960px;
+@screen-ipad-1000:                 1000px;
+@screen-ipad-l024:                 1024px;
+@screen-notebanar:                 1190px;
+@screen-notebook-15:               1280px;
+@screen-notebook:                  1366px;
+@screen-macbook:                   1435px;
+@screen-desktop-1440:              1440px;
+@screen-desktop-1680:              1680px;
+@screen-desktop:                   1920px;
+
+
+/* =============================================================================
+   Media queries for different screen sizes
+   ========================================================================== */
+
+/* =============================================================================
+   Media queries for different screen sizes
+   ========================================================================== */
+.screen-960(@rules) {
+    @media (max-width: @screen-960) { @rules(); }
+}
+.screen-860(@rules) {
+    @media (max-width: @screen-860) { @rules(); }
+}
+// iPhone
+.screen-iphone(@rules) {
+    @media (max-width: @screen-iphone) { @rules(); }
+}
+
+// iPhone
+.screen-mobile-360(@rules) {
+    @media (max-width: @screen-mobile-360) { @rules(); }
+}
+
+.screen-mobile-540(@rules) {
+    @media (max-width: @screen-mobile-540) { @rules(); }
+}
+
+.screen-mobile-640(@rules) {
+    @media (max-width: @screen-mobile-640) { @rules(); }
+}
+// Mobile
+.screen-mobile(@rules) {
+    @media (max-width: @screen-mobile) { @rules(); }
+}
+
+// Mobile 655
+.screen-mobile-688(@rules) {
+    @media (max-width: @screen-mobile-688) { @rules(); }
+}
+
+// Mobile 712
+.screen-mobile-712(@rules) {
+    @media (max-width: @screen-mobile-712) { @rules(); }
+}
+
+// Mobile 755
+.screen-mobile-755(@rules) {
+    @media (max-width: @screen-mobile-755) { @rules(); }
+}
+
+// Mobile 767
+.screen-mobile-767(@rules) {
+    @media (max-width: @screen-mobile-767) { @rules(); }
+}
+
+// iPad Portaint
+.screen-ipad-p(@rules) {
+    @media (max-width: @screen-ipad-p) { @rules(); }
+}
+
+// iPad Landscape 1000
+.screen-ipad-1000(@rules) {
+    @media (max-width: @screen-ipad-1000) { @rules(); }
+}
+
+
+// iPad Landscape
+.screen-ipad-l024(@rules) {
+    @media (max-width: @screen-ipad-l024) { @rules(); }
+}
+
+// Notebook
+.screen-notebanar(@rules) {
+    @media (max-width: @screen-notebanar) { @rules(); }
+}
+
+// Notebook
+.screen-notebook(@rules) {
+    @media (max-width: @screen-notebook) { @rules(); }
+}
+// Notebook
+.screen-notebook-15(@rules) {
+    @media (max-width: @screen-notebook-15) { @rules(); }
+}
+
+// Macbook
+.screen-macbook(@rules) {
+    @media (max-width: @screen-macbook) { @rules(); }
+}
+
+.screen-desktop-1440(@rules) {
+    @media (max-width: @screen-desktop-1440) { @rules(); }
+}
+
+.screen-desktop-1680(@rules) {
+    @media (max-width: @screen-desktop-1680) { @rules(); }
+}
+
+// Desktop
+.screen-desktop(@rules) {
+    @media (max-width: @screen-macbook) { @rules(); }
+}

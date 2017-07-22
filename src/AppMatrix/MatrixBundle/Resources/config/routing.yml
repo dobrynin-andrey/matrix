@@ -1,7 +1,7 @@
 # src/AppMatrix/MatrixBundle/Resources/config/routing.yml
 AppMatrixMatrixBundle_homepage:
     path:     /
-    defaults: { _controller: "AppMatrixMatrixBundle:Page:index" }
+    defaults: { _controller: "AppMatrixMatrixBundle:Index:index" }
     requirements:
          methods:  GET|POST
 

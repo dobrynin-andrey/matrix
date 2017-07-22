@@ -11,6 +11,14 @@
 /bin/
 /composer.phar
 .idea
+node_modules
+frontend/public/
+frontend/styles/service/sprite.scss
+.vscode
+
+
+# Files
+
 *.txt
 *.log
 *.lock
