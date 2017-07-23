@@ -86,11 +86,11 @@ class Project
     }
 
     /**
-     * @param mixed $created
+     * @param \DateTime $created
      */
-    public function setCreated($created)
+    public function setCreated()
     {
-        $this->created = $created;
+        $this->created = new \DateTime;
     }
 
     /**
@@ -102,11 +102,11 @@ class Project
     }
 
     /**
-     * @param mixed $updated
+     * @param \DateTime $updated
      */
-    public function setUpdated($updated)
+    public function setUpdated()
     {
-        $this->updated = $updated;
+        $this->updated = new \DateTime;
     }
 
 

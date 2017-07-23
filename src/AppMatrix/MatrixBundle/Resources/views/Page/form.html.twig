@@ -14,9 +14,7 @@
 
     {% for label, messages in app.session.flashbag.all %}
         {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-                {{ message }}
-            </div>
+            <p>{{ message }}</p>
         {% endfor %}
     {% endfor %}
     {{ form_errors(form) }}
@@ -52,24 +50,40 @@
 {% endblock %}
 
 {% block table_project %}
-{#<p>Уже загруженные параметры. Всего: {{ projects | length }}</p>#}
-    Тип параметра:
-<table class="table_project">
-    <tr>
-        <th>№</th>
-        <th>Название параметра</th>
-        <th>Значение параметра</th>
-        <th>Год</th>
-        <th>Дата создания</th>
-        <th>Дата изменения</th>
-    </tr>
-    {#{% for itemProject in projects %}#}
-        {#<tr>#}
-            {#<td>{{ loop.index }}</td>#}
-            {#<td><a href="/{{ itemProject.id }}/form">{{ itemProject.projectName }}</a></td>#}
-            {#<td>{{ itemProject.created | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>#}
-            {#<td>{{ itemProject.updated | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>#}
-        {#</tr>#}
-    {#{% endfor %}#}
-</table>
+    <p>Уже загруженные параметры. Всего: {{ parametersLength }}</p>
+    {% if parameters | length > 0 %}
+        {% for itemParameter in parameters %}
+            <div class="table_project_title">Тип параметра: {{ itemParameter['name']}}</div>
+            <table class="table_project">
+                <tr>
+                    <th>№</th>
+                    <th>Название параметра</th>
+                    <th>Дата создания</th>
+                    <th>Дата изменения</th>
+                </tr>
+                    {% for item in itemParameter['value'] %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ item.parameterName }}</td>
+                            <td>{{ item.created | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
+                            <td>{{ item.updated | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
+                        </tr>
+                    {% endfor %}
+            </table>
+        {% endfor %}
+    {% else %}
+        <table class="table_project">
+            <tr>
+                <th>№</th>
+                <th>Название параметра</th>
+                <th>Дата создания</th>
+                <th>Дата изменения</th>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: center;">
+                    <b>Проектов пока не создано!</b>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
 {% endblock %}

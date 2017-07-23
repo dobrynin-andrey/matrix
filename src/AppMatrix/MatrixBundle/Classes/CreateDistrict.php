@@ -11,15 +11,13 @@ class CreateDistrict extends District{
         //Получаем менеджер БД - Entity Manager
         $em = $obg->getDoctrine()->getManager();
 
-        $dataTime = new \DateTime();
-
         //Создаем экземпляр модели
         $district = new District;
         //Задаем значение полей
         $district->setDistrictName($district_name);
         $district->setDistrictType($district_type);
-        $district->setCreated($dataTime);
-        $district->setUpdated($dataTime);
+        $district->setCreated();
+        $district->setUpdated();
         //Передаем менеджеру объект модели
         $em->persist($district);
         //Добавляем запись в таблицу

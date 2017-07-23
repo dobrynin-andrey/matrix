@@ -11,14 +11,12 @@ class CreateProject extends Project{
         //Получаем менеджер БД - Entity Manager
         $em = $obg->getDoctrine()->getManager();
 
-        $dataTime = new \DateTime();
-
         //Создаем экземпляр модели
         $project = new Project;
         //Задаем значение полей
         $project->setProjectName($request);
-        $project->setCreated($dataTime);
-        $project->setUpdated($dataTime);
+        $project->setCreated();
+        $project->setUpdated();
         //Передаем менеджеру объект модели
         $em->persist($project);
         //Добавляем запись в таблицу

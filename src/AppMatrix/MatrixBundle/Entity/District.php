@@ -107,11 +107,11 @@ class District
     }
 
     /**
-     * @param mixed $created
+     * @param \DateTime $created
      */
-    public function setCreated($created)
+    public function setCreated()
     {
-        $this->created = $created;
+        $this->created = new \DateTime;
     }
 
     /**
@@ -123,11 +123,11 @@ class District
     }
 
     /**
-     * @param mixed $updated
+     * @param \DateTime $updated
      */
-    public function setUpdated($updated)
+    public function setUpdated()
     {
-        $this->updated = $updated;
+        $this->updated = new \DateTime;
     }
 
 }

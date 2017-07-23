@@ -2,29 +2,25 @@
 
 namespace AppMatrix\MatrixBundle\Classes;
 
-use AppMatrix\MatrixBundle\Entity\Parameter;
+use AppMatrix\MatrixBundle\Entity\ParameterType;
 
-class CreateParameter extends Parameter{
+class CreateParameterType extends ParameterType {
 
-    public function Add ($obg, $parameter_name,  $parameter_type) {
+    public function Add ($obg, $parameter_type) {
 
         //Получаем менеджер БД - Entity Manager
         $em = $obg->getDoctrine()->getManager();
 
-
         //Создаем экземпляр модели
-        $parameter = new Parameter;
+        $parameterType = new ParameterType;
         //Задаем значение полей
-        $parameter->setParameterName($parameter_name);
-        $parameter->setParameterType($parameter_type);
-        $parameter->setCreated();
-        $parameter->setUpdated();
+        $parameterType->setParameterType($parameter_type);
         //Передаем менеджеру объект модели
-        $em->persist($parameter);
+        $em->persist($parameterType);
         //Добавляем запись в таблицу
         $em->flush();
 
 
-        return $parameter;
+        return $parameterType;
     }
 }

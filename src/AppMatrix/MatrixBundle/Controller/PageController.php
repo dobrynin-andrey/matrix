@@ -3,9 +3,11 @@
 
 namespace AppMatrix\MatrixBundle\Controller;
 
+use AppMatrix\MatrixBundle\Classes\CreateParameterType;
 use AppMatrix\MatrixBundle\Classes\CreateProject;
 use AppMatrix\MatrixBundle\Classes\CreateDistrict;
 use AppMatrix\MatrixBundle\Classes\CreateParameter;
+use AppMatrix\MatrixBundle\Classes\CreateParameterValues;
 use AppMatrix\MatrixBundle\Entity\FormProject;
 use AppMatrix\MatrixBundle\Entity\Parameter;
 use AppMatrix\MatrixBundle\Entity\Project;
@@ -19,6 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
 use AppMatrix\MatrixBundle\PHPExcel\importCSV;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class PageController extends Controller
 {
@@ -50,8 +54,6 @@ class PageController extends Controller
                 $path = $enquiry->getFile()->getRealPath();
 
 
-                //$entity = $this->get('doctrine.orm.entity_manager')->getRepository('AppMatrixMatrixBundle:Project')->find($project_id);
-
                 // Создание объекта
                 $phpCSV = new importCSV;
                 // Проверка на корректность .csv
@@ -62,6 +64,14 @@ class PageController extends Controller
                     // Парсинг корректных файлов
                     $arrParse = $phpCSV->parseCSV($path);
 
+                    // Берем объект project_type из таблицы
+                    $parameterTypeID = $this->get('doctrine.orm.entity_manager')->getRepository('AppMatrixMatrixBundle:ParameterType')->find($parameter_type);
+
+                    // Запись в табилцу "parameter"
+                    $parameter = new CreateParameter;
+                    $addParameter = $parameter->Add($this,  $parameter_name, $parameterTypeID);
+
+
                     // Перебор распарсенных данных
                     foreach ($arrParse as $itemParse) {
 
@@ -71,12 +81,12 @@ class PageController extends Controller
 
                         foreach ($itemParse['year'] as  $year) {
 
-                            // Запись в табилцу "parameter"
-                            $parameter = new CreateParameter;
-                            $addParameter = $parameter->Add($this, $project, $addDistrict, $parameter_name, $itemParse['parameter_value'][$year], $parameter_type, $year);
+                            $parameterValue = new CreateParameterValues;
+                            $addParameterValue = $parameterValue->Add($this, $project, $addDistrict, $addParameter, $itemParse['parameter_value'][$year], $year);
 
                         }
                     }
+
                     if (!empty($addParameter)){
                         $this->addFlash('success', 'Загрузка прошла успешно!');
                     } else {
@@ -93,35 +103,43 @@ class PageController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
+        // Выводим текущий проект
         $projects = $em->getRepository('AppMatrixMatrixBundle:Project')->find($project->getId());
 
-        if (!$projects) {
-            throw $this->createNotFoundException('Не найден не один проект!');
+        // Берем уникальные значения параметров
+        /** @var  $qb  \Doctrine\ORM\QueryBuilder */
+        $qb = $em->getRepository("AppMatrixMatrixBundle:ParameterValues")->createQueryBuilder("p");
+
+        $allIdParameters = $qb->select("(p.parameter)")
+            ->where('p.project = '. $project->getId())
+            ->distinct(true)
+            ->getQuery()
+            ->getResult();
+
+        // Справочник всех типов параметров
+        $parametersTypeArray = $em->getRepository('AppMatrixMatrixBundle:ParameterType')->findAll();
+
+        // Вормируем массив с парамитреами и их типами
+        $parametersAll =[];
+        foreach ($parametersTypeArray as $k => $itemType) {
+            foreach ($allIdParameters as $itemId) {
+                $parametersOne = $em->getRepository('AppMatrixMatrixBundle:Parameter')->find($itemId['1']);
+                if ($itemType == $parametersOne->getParameterType()) {
+                    $parametersAll[$k]["name"] = $itemType->getParameterType();
+                    $parametersAll[$k]["value"][] = $parametersOne;
+                }
+
+            }
+
         }
-        $parameters = $em->getRepository('AppMatrixMatrixBundle:Parameter')->findBy(
-            array('project' => $project->getId()),
-            array('parameter_name' => 'ASC')
-        );
-//        if (!$parameters) {
-//            throw $this->createNotFoundException('Не найден не один параметр!');
-//        }
-        dump($parameters);
 
-     /*   $districts = $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
-            array('p' => 'Keyboard'),
-            array('price' => 'ASC')
-        );
+        dump($parametersAll);
 
-        if (!$districts) {
-            throw $this->createNotFoundException('Не найден не один район!');
-        }
-
-        dump($districts);
-*/
         return $this->render('AppMatrixMatrixBundle:Page:form.html.twig', array(
             'form' => $form->createView(),
             'projects'      => $projects,
-            'parameters'      => $parameters,
+            'parameters'      => $parametersAll,
+            'parametersLength'      => count($allIdParameters),
             //'districts'      => $districts,
         ));
 

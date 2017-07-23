@@ -27,13 +27,21 @@
             <th>Дата создания</th>
             <th>Дата изменения</th>
         </tr>
-    {% for itemProject in projects %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td><a href="/{{ itemProject.id }}/form">{{ itemProject.projectName }}</a></td>
-            <td>{{ itemProject.created | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
-            <td>{{ itemProject.updated | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
-        </tr>
-    {% endfor %}
+        {% if projects | length > 0 %}
+            {% for itemProject in projects %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><a href="/{{ itemProject.id }}/form">{{ itemProject.projectName }}</a></td>
+                    <td>{{ itemProject.created | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
+                    <td>{{ itemProject.updated | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center;">
+                    <b>Проектов пока не создано!</b>
+                </td>
+            </tr>
+        {% endif %}
     </table>
 {% endblock %}

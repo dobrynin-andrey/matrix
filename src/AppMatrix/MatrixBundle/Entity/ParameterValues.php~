@@ -1,0 +1,72 @@
+<?php
+
+// src/AppMatrix/MatrixBundle/Entity/Parameter.php
+
+namespace AppMatrix\MatrixBundle\Entity;
+use AppMatrix\MatrixBundle\Entity\District;
+use AppMatrix\MatrixBundle\Entity\Project;
+use AppMatrix\MatrixBundle\Entity\Parameter;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="parameter_values")
+ */
+
+class ParameterValues
+{
+
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
+    protected $id;
+
+    /**
+     * Many Parameters has One Project.
+     *
+     * @ORM\ManyToOne(targetEntity="AppMatrix\MatrixBundle\Entity\Project")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     */
+    protected $project;
+
+    /**
+     * Many Parameter has One District.
+     * @ORM\ManyToOne(targetEntity="AppMatrix\MatrixBundle\Entity\District")
+     * @ORM\JoinColumn(name="district_id", referencedColumnName="id")
+     */
+    protected $district;
+
+    /**
+     * Many Values has One Parameter.
+     * @ORM\ManyToOne(targetEntity="AppMatrix\MatrixBundle\Entity\Parameter")
+     * @ORM\JoinColumn(name="parameter_id", referencedColumnName="id")
+     */
+    protected $parameter;
+
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $parameter_value;
+
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $year;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $created;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated;
+
+}
