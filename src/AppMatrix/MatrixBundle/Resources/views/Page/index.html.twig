@@ -6,7 +6,7 @@
         <h1>Создать новый проект:</h1>
     </header>
 
-    <p>Введите название нового прокта</p>
+    <p>Введите название нового прокета</p>
 
     {{ form_start(form, { 'action': path('AppMatrixMatrixBundle_homepage'), 'method': 'POST', 'attr': {'class': 'blogger'} }) }}
 
@@ -19,7 +19,7 @@
 
 {% endblock %}
 {% block table_project %}
-    <p>Уже созданные прокты. Всего: {{  projects | length }}</p>
+    <p>Уже созданные проекты. Всего: {{  projects | length }}</p>
     <table class="table_project">
         <tr>
             <th>№</th>

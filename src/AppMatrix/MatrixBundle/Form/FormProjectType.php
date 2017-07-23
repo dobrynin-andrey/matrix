@@ -14,7 +14,7 @@ class FormProjectType extends AbstractType
 
         $builder->add('project_name', TextType::class,
                 array(
-                    'label' => 'Название'
+                    'label' => 'Название:'
                 )
             );
     }
