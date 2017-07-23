@@ -2,7 +2,16 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html"; charset=utf-8" />
-    <title>{% block title %}Symblog{% endblock %} - Symblog</title>
+    <title>{% block title %}Home{% endblock %} - Matrix Application</title>
+    <meta name="description" content="Веб приложение - Matrix Application">
+
+    <meta property="og:locale" content="ru_RU"/>
+    <meta property="og:type" content="application"/>
+    <meta property="og:title" content="Matrix Application"/>
+    <meta property="og:description" content="Веб приложение - Matrix Application"/>
+    <meta property="og:image" content="http://{{ app.request.server.get('HTTP_HOST') }}/logo.jpg"/>
+    <meta property="og:site_name" content="Веб приложение - Matrix Application"/>
+
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -58,7 +67,7 @@
 
 {% block javascripts %}{% endblock %}
 <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
+{# <script type="text/javascript" >
     (function (d, w, c) {
         (w[c] = w[c] || []).push(function() {
             try {
@@ -85,6 +94,6 @@
     })(document, window, "yandex_metrika_callbacks");
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/45399207" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+<!-- /Yandex.Metrika counter -->#}
 </body>
 </html>
