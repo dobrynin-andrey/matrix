@@ -22,8 +22,7 @@
                 <nav>
                     <ul class="navigation">
                         <li><a href="{{ path('AppMatrixMatrixBundle_homepage') }}">Home</a></li>
-                        <li><a href="{{ path('AppMatrixMatrixBundle_test') }}">Test</a></li>
-                        <li><a href="{{ path('AppMatrixMatrixBundle_form') }}">Form</a></li>
+                        <li><a href="{{ path('AppMatrixMatrixBundle_about') }}">About</a></li>
                     </ul>
                 </nav>
             {% endblock %}
@@ -35,7 +34,7 @@
         </hgroup>
     </header>
 
-    <section class="main-col {% if (app.request.requestUri == "/") %}main-col__full{% endif %}">
+    <section class="main-col {% if (app.request.requestUri == "/" or app.request.requestUri == "/about") %}main-col__full{% endif %}">
         {% block body %}{% endblock %}
     </section>
 
@@ -48,6 +47,7 @@
     <section class="main-col main-col_project main-col__full">
         {% block table_project %}{% endblock %}
     </section>
+    {% block table_district %}{% endblock %}
 
     <div id="footer">
         {% block footer %}

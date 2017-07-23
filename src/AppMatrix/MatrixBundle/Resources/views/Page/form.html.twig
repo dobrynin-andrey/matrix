@@ -12,11 +12,6 @@
 
     {{ form_start(form, { 'attr': {'class': 'blogger'} }) }}
 
-    {% for label, messages in app.session.flashbag.all %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endfor %}
     {{ form_errors(form) }}
     {{ form_row(form.project_id) }}
     {{ form_row(form.parameter_type) }}
@@ -28,6 +23,12 @@
     {{ form_rest(form) }}
 
     <input type="submit" value="Загрузить" />
+
+    {% for label, messages in app.session.flashbag.all %}
+        {% for message in messages %}
+            <p class="form_result">{{ message }}</p>
+        {% endfor %}
+    {% endfor %}
 
 {% endblock %}
 
@@ -65,8 +66,8 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ item.parameterName }}</td>
-                            <td>{{ item.created | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
-                            <td>{{ item.updated | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
+                            <td>{{ item.created | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
+                            <td>{{ item.updated | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
                         </tr>
                     {% endfor %}
             </table>
@@ -81,9 +82,50 @@
             </tr>
             <tr>
                 <td colspan="4" style="text-align: center;">
-                    <b>Проектов пока не создано!</b>
+                    <b>Параметры еще не загружены!</b>
                 </td>
             </tr>
         </table>
     {% endif %}
+{% endblock %}
+
+{% block table_district %}
+    <section class="main-col main-col_project main-col__full">
+        <p>Районы исследования. Всего: {{ districts | length }}</p>
+        {% if districts | length > 0 %}
+            <table class="table_project">
+                <tr>
+                    <th>№</th>
+                    <th>Название района</th>
+                    <th>Тип района</th>
+                    <th>Дата создания</th>
+                    <th>Дата изменения</th>
+                </tr>
+                {% for itemDistrict in districts %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ itemDistrict.districtName }}</td>
+                        <td>{{ itemDistrict.districtType }}</td>
+                        <td>{{ itemDistrict.created | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
+                        <td>{{ itemDistrict.updated | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <table class="table_project">
+                <tr>
+                    <th>№</th>
+                    <th>Название района</th>
+                    <th>Тип района</th>
+                    <th>Дата создания</th>
+                    <th>Дата изменения</th>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: center;">
+                        <b>Районы исследования еще не загружены!</b>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+    </section>
 {% endblock %}

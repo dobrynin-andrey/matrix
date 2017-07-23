@@ -25,4 +25,5 @@ frontend/styles/service/sprite.scss
 *.xls
 *.xlsx
 *.csv
+!Productions-sh_standart.csv
 

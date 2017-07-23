@@ -22,7 +22,6 @@ use AppMatrix\MatrixBundle\PHPExcel\importCSV;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-use Doctrine\ORM\Query\ResultSetMapping;
 
 class PageController extends Controller
 {
@@ -77,7 +76,33 @@ class PageController extends Controller
 
                         // Запись в табилцу "district"
                         $district = new CreateDistrict;
-                        $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
+                        $em = $this->getDoctrine()->getManager();
+                        // Берем загруженные районы
+                        $districtDB = $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
+                            [
+                                'district_name' => $itemParse['district_name'],
+                                'district_type' => $district_type
+                            ]
+                        );
+
+
+                        $addDistrict = '';
+
+                        if (!empty($districtDB)) {
+                            // Проверка на наличие уже существующих районов
+                            foreach ($districtDB as $itemDistrictDB) {
+                                if ($itemDistrictDB->getDistrictName() != $itemParse['district_name']) {
+                                    $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
+                                } else {
+                                    $addDistrict = $itemDistrictDB;
+                                }
+
+                            }
+                        } else {
+                            $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
+
+                        }
+
 
                         foreach ($itemParse['year'] as  $year) {
 
@@ -133,21 +158,34 @@ class PageController extends Controller
 
         }
 
-        dump($parametersAll);
+        // Выводим районы текущего проекта
+        /** @var  $qb  \Doctrine\ORM\QueryBuilder */
+        $qb = $em->getRepository("AppMatrixMatrixBundle:ParameterValues")->createQueryBuilder("d");
+
+        $districtsInParameterValue = $qb->select("(d.district)")
+            ->where('d.project = '. $project->getId())
+            ->distinct(true)
+            ->getQuery()
+            ->getResult();
+
+        $arrDistricts =[];
+        foreach ($districtsInParameterValue as $itemDistrict) {
+            array_push($arrDistricts ,$itemDistrict[1]);
+        }
+        $districts = $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
+            ['id' => $arrDistricts]
+        );
+        // Выводим районы текущего проекта END
 
         return $this->render('AppMatrixMatrixBundle:Page:form.html.twig', array(
             'form' => $form->createView(),
             'projects'      => $projects,
             'parameters'      => $parametersAll,
             'parametersLength'      => count($allIdParameters),
-            //'districts'      => $districts,
+            'districts'      => $districts,
         ));
 
     }
 
-    public function testAction()
-    {
-        return $this->render('AppMatrixMatrixBundle:Page:test.html.twig');
-    }
 
 }

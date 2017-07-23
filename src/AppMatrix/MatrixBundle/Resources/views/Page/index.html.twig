@@ -32,8 +32,8 @@
                 <tr>
                     <td>{{ loop.index }}</td>
                     <td><a href="/{{ itemProject.id }}/form">{{ itemProject.projectName }}</a></td>
-                    <td>{{ itemProject.created | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
-                    <td>{{ itemProject.updated | date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</td>
+                    <td>{{ itemProject.created | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
+                    <td>{{ itemProject.updated | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
                 </tr>
             {% endfor %}
         {% else %}

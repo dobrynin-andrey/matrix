@@ -5,9 +5,9 @@ AppMatrixMatrixBundle_homepage:
     requirements:
          methods:  GET|POST
 
-AppMatrixMatrixBundle_test:
-    path:     /test
-    defaults: { _controller: "AppMatrixMatrixBundle:Page:test" }
+AppMatrixMatrixBundle_about:
+    path:     /about
+    defaults: { _controller: "AppMatrixMatrixBundle:About:about" }
     requirements:
          methods:  GET
 AppMatrixMatrixBundle_form:
