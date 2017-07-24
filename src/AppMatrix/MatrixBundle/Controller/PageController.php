@@ -8,6 +8,7 @@ use AppMatrix\MatrixBundle\Classes\CreateProject;
 use AppMatrix\MatrixBundle\Classes\CreateDistrict;
 use AppMatrix\MatrixBundle\Classes\CreateParameter;
 use AppMatrix\MatrixBundle\Classes\CreateParameterValues;
+use AppMatrix\MatrixBundle\Entity\FormDeleteParameter;
 use AppMatrix\MatrixBundle\Entity\FormProject;
 use AppMatrix\MatrixBundle\Entity\Parameter;
 use AppMatrix\MatrixBundle\Entity\Project;
@@ -16,6 +17,7 @@ use AppMatrix\MatrixBundle\Entity\District;
 
 use AppMatrix\MatrixBundle\Entity\Form;
 use AppMatrix\MatrixBundle\Form\EnquiryType;
+use AppMatrix\MatrixBundle\Form\FormDeleteParameterType;
 use AppMatrix\MatrixBundle\Form\FormProjectType;
 use Symfony\Component\HttpFoundation\Request;
 use AppMatrix\MatrixBundle\PHPExcel\importCSV;
@@ -144,7 +146,7 @@ class PageController extends Controller
         // Справочник всех типов параметров
         $parametersTypeArray = $em->getRepository('AppMatrixMatrixBundle:ParameterType')->findAll();
 
-        // Вормируем массив с парамитреами и их типами
+        // Формируем массив с параметрами и их типами
         $parametersAll =[];
         foreach ($parametersTypeArray as $k => $itemType) {
             foreach ($allIdParameters as $itemId) {
@@ -177,12 +179,67 @@ class PageController extends Controller
         );
         // Выводим районы текущего проекта END
 
+
+        /**
+         * Удаление параметров
+         */
+
+        $enquiry = new FormDeleteParameter();
+
+        $form_delete = $this->createForm(FormDeleteParameterType::class, $enquiry);
+
+        if ($request->isMethod($request::METHOD_POST)) {
+            $form_delete->handleRequest($request);
+
+            if ($form_delete->isValid()) {
+
+                $yes = $request->request->get('form_delete')['yes'];
+
+                $parameterValueDelete = $em->getRepository('AppMatrixMatrixBundle:ParameterValues')->findBy(
+                    [
+                        'parameter' => $yes
+                    ]
+                );
+                foreach ($parameterValueDelete as $itemParameterValueDelete) {
+                    $em->remove($itemParameterValueDelete);
+                }
+
+                $parameterDelete = $em->getRepository('AppMatrixMatrixBundle:Parameter')->find($yes);
+                if (!empty($parameterValueDelete) && !empty($parameterDelete)) {
+                    $this->addFlash('delete', 'Параметр: ' . $parameterDelete->getParameterName() .' - успешно удален!');
+                }
+
+                $em->remove($parameterDelete);
+                $em->flush();
+
+                return $this->redirectToRoute('AppMatrixMatrixBundle_project_form', array('id' => $project->getId()));
+            }
+        }
+
+
+
+
+
+
+
+        if ($request->query->get('object') == "param" && !empty($request->query->get('delete'))) {
+
+            //$parametersOne = $em->getRepository('AppMatrixMatrixBundle:Parameter')->find($itemId['1']);
+            //$em->remove($product);
+            //$em->flush();
+
+            dump("true");
+        }
+
+
+
         return $this->render('AppMatrixMatrixBundle:Page:form.html.twig', array(
-            'form' => $form->createView(),
+            'form_upload' => $form->createView(),
             'projects'      => $projects,
             'parameters'      => $parametersAll,
             'parametersLength'      => count($allIdParameters),
             'districts'      => $districts,
+            'form_delete' => $form_delete->createView(),
         ));
 
     }

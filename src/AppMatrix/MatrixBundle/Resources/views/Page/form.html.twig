@@ -3,24 +3,34 @@
 
 {% block title %}{{ projects.projectName }}{% endblock%}
 
+
+
 {% block body %}
+    <div style="display: none">
+        <div class="delete-form" id="delete-form">
+
+            <div class="delete-form_question">Удалить параметр?</div>
+            {{ form(form_delete) }}
+        </div>
+    </div>
     <header>
         <h1>Загрузка новых параметров</h1>
     </header>
 
     <p>Внесите данные:</p>
 
-    {{ form_start(form, { 'attr': {'class': 'blogger'} }) }}
+    {{ form_start(form_upload, { 'attr': {'class': 'blogger'} }) }}
 
-    {{ form_errors(form) }}
-    {{ form_row(form.project_id) }}
-    {{ form_row(form.parameter_type) }}
-    {{ form_row(form.parameter_name) }}
-    {{ form_row(form.district_type) }}
+    {{ form_errors(form_upload) }}
+    {{ form_row(form_upload.project_id) }}
+    {{ form_row(form_upload.parameter_type) }}
+    {{ form_row(form_upload.parameter_name) }}
+    {{ form_row(form_upload.district_type) }}
     <p>Загрузите файл .csv с данными параметра. Пример файла импорта: <a target="_blank" rel="nofollow" href="{{ asset('upload/import_csv/Productions-sh_standart.csv') }}">Посмотреть</a></p>
-    {{ form_row(form.file) }}
+    {{ form_row(form_upload.file) }}
 
-    {{ form_rest(form) }}
+    {{ form_rest(form_upload) }}
+
 
     <input type="submit" value="Загрузить" />
 
@@ -55,12 +65,13 @@
     {% if parameters | length > 0 %}
         {% for itemParameter in parameters %}
             <div class="table_project_title">Тип параметра: {{ itemParameter['name']}}</div>
-            <table class="table_project">
+            <table class="table_project table_project_delete">
                 <tr>
                     <th>№</th>
                     <th>Название параметра</th>
                     <th>Дата создания</th>
                     <th>Дата изменения</th>
+                    <th>Удалить</th>
                 </tr>
                     {% for item in itemParameter['value'] %}
                         <tr>
@@ -68,6 +79,7 @@
                             <td>{{ item.parameterName }}</td>
                             <td>{{ item.created | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
                             <td>{{ item.updated | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
+                            <td><a class="delete-link" id="delete-link" data-delete="{{ item.id }}" href="#delete-form">Удалить</a></td>
                         </tr>
                     {% endfor %}
             </table>
