@@ -21,3 +21,9 @@ AppMatrixMatrixBundle_project_form:
     defaults: { _controller: "AppMatrixMatrixBundle:Page:form" }
     requirements:
        #id:  '\d+'
+AppMatrixMatrixBundle_calculation:
+    path:  /{id}/calculation
+    methods:  ['GET', 'POST']
+    defaults: { _controller: "AppMatrixMatrixBundle:Calculation:calculation" }
+    requirements:
+       #id:  '\d+'

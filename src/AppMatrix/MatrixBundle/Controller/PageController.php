@@ -217,22 +217,6 @@ class PageController extends Controller
         }
 
 
-
-
-
-
-
-        if ($request->query->get('object') == "param" && !empty($request->query->get('delete'))) {
-
-            //$parametersOne = $em->getRepository('AppMatrixMatrixBundle:Parameter')->find($itemId['1']);
-            //$em->remove($product);
-            //$em->flush();
-
-            dump("true");
-        }
-
-
-
         return $this->render('AppMatrixMatrixBundle:Page:form.html.twig', array(
             'form_upload' => $form->createView(),
             'projects'      => $projects,
