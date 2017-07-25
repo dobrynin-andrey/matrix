@@ -254,6 +254,7 @@ class CalculationController extends Controller
          * Этап 2. Деление одного года на другой
          */
 
+        $resultM2 = [];
         foreach ($M1 as $dm => $districtM1) { // Перебор районов
 
             $maxArray = max($districtM1);
@@ -269,9 +270,13 @@ class CalculationController extends Controller
             }
         }
 
+        $arResult['parameters'] = $parametersAll;
+        $arResult['M1'] = $M1;
+        $arResult['resultM2'] = $resultM2;
+
 
         return $this->render('AppMatrixMatrixBundle:Page:calculation.html.twig', [
-            //'arResult' => $parametersAll
+            'arResult' => $arResult
         ]);
     }
 

@@ -2,6 +2,13 @@
 {% extends 'AppMatrixMatrixBundle::layout.html.twig' %}
 
 {% block body %}
+    <div style="display: none">
+        <div class="delete-form" id="delete-form">
+
+            <div class="delete-form_question">Удалить проект?</div>
+            {{ form(form_delete) }}
+        </div>
+    </div>
     <header>
         <h1>Создать новый проект:</h1>
     </header>
@@ -17,15 +24,22 @@
 
     <input type="submit" value="Далее" />
 
+    {% for label, messages in app.session.flashbag.all %}
+        {% for message in messages %}
+            <p class="form_result">{{ message }}</p>
+        {% endfor %}
+    {% endfor %}
+
 {% endblock %}
 {% block table_project %}
     <p>Уже созданные проекты. Всего: {{  projects | length }}</p>
-    <table class="table_project">
+    <table class="table_project table_project_delete">
         <tr>
             <th>№</th>
             <th>Название проекта</th>
             <th>Дата создания</th>
             <th>Дата изменения</th>
+            <th>Удалить</th>
         </tr>
         {% if projects | length > 0 %}
             {% for itemProject in projects %}
@@ -34,6 +48,7 @@
                     <td><a href="/{{ itemProject.id }}/form">{{ itemProject.projectName }}</a></td>
                     <td>{{ itemProject.created | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
                     <td>{{ itemProject.updated | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
+                    <td><a class="delete-link" id="delete-link" data-delete="{{ itemProject.id }}" href="#delete-form">Удалить</a></td>
                 </tr>
             {% endfor %}
         {% else %}
