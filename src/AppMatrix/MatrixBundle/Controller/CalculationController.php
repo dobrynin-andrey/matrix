@@ -25,63 +25,63 @@ class CalculationController extends Controller
          */
 
 
-        // Выводим районы текущего проекта
-        /** @var  $qb  \Doctrine\ORM\QueryBuilder */
-        $qb = $em->getRepository("AppMatrixMatrixBundle:ParameterValues")->createQueryBuilder("d");
-
-        $districtsInParameterValue = $qb->select("(d.district)")
-            ->where('d.project = '. $project->getId())
-            ->distinct(true)
-            ->getQuery()
-            ->getResult();
-
-        $arrDistricts =[];
-
-        // Берем уникальные значения параметров
-        /** @var  $qb  \Doctrine\ORM\QueryBuilder */
-        $qb = $em->getRepository("AppMatrixMatrixBundle:ParameterValues")->createQueryBuilder("p");
-
-        $allIdParameters = $qb->select("(p.parameter)")
-            ->where('p.project = '. $project->getId())
-            ->distinct(true)
-            ->getQuery()
-            ->getResult();
-
-        // Справочник всех типов параметров
-        $parametersTypeArray = $em->getRepository('AppMatrixMatrixBundle:ParameterType')->findAll();
-
-        // Формируем массив с параметрами и их типами
-        $parametersAll = [];
-
-        foreach ($districtsInParameterValue as $d => $itemDistrict) {
-            $parametersAll['districts'][$d]['id'] = $itemDistrict[1];
-            foreach ($parametersTypeArray as $k => $itemType) {
-                $p = 0;
-                foreach ($allIdParameters as $n => $itemId) {
-                    $parametersOne = $em->getRepository('AppMatrixMatrixBundle:Parameter')->find($itemId['1']);
-
-                    if ($itemType == $parametersOne->getParameterType()) {
-
-                        $parametersAll['districts'][$d]['parameterType'][$k]['id'] = $itemType->getId();
-                        $parametersAll['districts'][$d]['parameterType'][$k]['nameType'] = $itemType->getParameterType();
-                        $parametersAll['districts'][$d]['parameterType'][$k]['parameters'][$p]['parameterId'] = $parametersOne;
-
-                        $parameterValues = $em->getRepository('AppMatrixMatrixBundle:ParameterValues')->findBy(
-                            [
-                                'project' => $project,
-                                'parameter' => $parametersOne,
-                                'district' => $itemDistrict,
-                            ]
-                        );
-                        $parametersAll['districts'][$d]['parameterType'][$k]['parameters'][$p]['parameterValue'] = $parameterValues;
-                        $p++;
-                    }
-                }
-            }
-        }
-
-        dump($parametersAll['districts'][0]);
-        dump($parametersAll);
+//        // Выводим районы текущего проекта
+//        /** @var  $qb  \Doctrine\ORM\QueryBuilder */
+//        $qb = $em->getRepository("AppMatrixMatrixBundle:ParameterValues")->createQueryBuilder("d");
+//
+//        $districtsInParameterValue = $qb->select("(d.district)")
+//            ->where('d.project = '. $project->getId())
+//            ->distinct(true)
+//            ->getQuery()
+//            ->getResult();
+//
+//        $arrDistricts =[];
+//
+//        // Берем уникальные значения параметров
+//        /** @var  $qb  \Doctrine\ORM\QueryBuilder */
+//        $qb = $em->getRepository("AppMatrixMatrixBundle:ParameterValues")->createQueryBuilder("p");
+//
+//        $allIdParameters = $qb->select("(p.parameter)")
+//            ->where('p.project = '. $project->getId())
+//            ->distinct(true)
+//            ->getQuery()
+//            ->getResult();
+//
+//        // Справочник всех типов параметров
+//        $parametersTypeArray = $em->getRepository('AppMatrixMatrixBundle:ParameterType')->findAll();
+//
+//        // Формируем массив с параметрами и их типами
+//        $parametersAll = [];
+//
+//        foreach ($districtsInParameterValue as $d => $itemDistrict) {
+//            $parametersAll['districts'][$d]['id'] = $itemDistrict[1];
+//            foreach ($parametersTypeArray as $k => $itemType) {
+//                $p = 0;
+//                foreach ($allIdParameters as $n => $itemId) {
+//                    $parametersOne = $em->getRepository('AppMatrixMatrixBundle:Parameter')->find($itemId['1']);
+//
+//                    if ($itemType == $parametersOne->getParameterType()) {
+//
+//                        $parametersAll['districts'][$d]['parameterType'][$k]['id'] = $itemType->getId();
+//                        $parametersAll['districts'][$d]['parameterType'][$k]['nameType'] = $itemType->getParameterType();
+//                        $parametersAll['districts'][$d]['parameterType'][$k]['parameters'][$p]['parameterId'] = $parametersOne;
+//
+//                        $parameterValues = $em->getRepository('AppMatrixMatrixBundle:ParameterValues')->findBy(
+//                            [
+//                                'project' => $project,
+//                                'parameter' => $parametersOne,
+//                                'district' => $itemDistrict,
+//                            ]
+//                        );
+//                        $parametersAll['districts'][$d]['parameterType'][$k]['parameters'][$p]['parameterValue'] = $parameterValues;
+//                        $p++;
+//                    }
+//                }
+//            }
+//        }
+//
+//        dump($parametersAll['districts'][0]);
+//        dump($parametersAll);
 
 
 
@@ -162,10 +162,95 @@ class CalculationController extends Controller
             }
         }
 
+        /**
+         *  Построение и рассчет матриц
+         */
+
+        // Перебор районов (districts)
+
+        //dump($parametersAll['districts']);
+        foreach ($parametersAll['districts'] as $d => $district) {
+//            if ($d == 1) {
+//                break;
+//            }
+            foreach ($district['parameterType'] as $t => $parameterType) {
+
+                /**
+                 *  Матрица М1
+                 */
+
+                // Вычисляем по первому параметру
+                if ($parameterType['id'] == 1) {
+                    foreach ($parameterType['parameters'] as $p => $itemParameter) { // Перебираем массив параметров
+                        foreach ($itemParameter['parameterValues'] as $v => $itemValue) { // Перебираем значение каждого параметра
+                            // Для Результаты - Внешние
+                            for ($i = 0; $i < count($district['parameterType'][2]['parameters']); $i++) { // Перебираем значения второго типа
+
+                                $yearValue = $itemValue->getParameterValue(); // Значение текущего параметра
+
+                                $thirdTypeValue =  $district['parameterType'][2]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
+                                //Запись в M1
+                                $M1[$district['id']][$itemValue->getYear()][$itemParameter['parameterId']->getId()][$district['parameterType'][2]['parameters'][$i]['parameterId']->getId()] = $yearValue / $thirdTypeValue;
+
+                            }
 
 
+                            // Для Результаты - Внутренние
+                            for ($i = 0; $i < count($district['parameterType'][3]['parameters']); $i++) { // Перебираем значения второго типа
+
+                                $yearValue = $itemValue->getParameterValue(); // Значение текущего параметра
+
+                                $fourthTypeValue =  $district['parameterType'][3]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
+                                //Запись в M1
+                                $M1[$district['id']][$itemValue->getYear()][$itemParameter['parameterId']->getId()][$district['parameterType'][3]['parameters'][$i]['parameterId']->getId()] = $yearValue / $fourthTypeValue;
+
+
+                            }
+
+                        }
+                    }
+                }
+
+                // Вычисляем по второму параметру
+                if ($parameterType['id'] == 2) {
+                    foreach ($parameterType['parameters'] as $p => $itemParameter) { // Перебираем массив параметров
+                        foreach ($itemParameter['parameterValues'] as $v => $itemValue) { // Перебираем значение каждого параметра
+                            // Для Результаты - Внешние
+                            for ($i = 0; $i < count($district['parameterType'][2]['parameters']); $i++) { // Перебираем значения второго типа
+
+                                $yearValue = $itemValue->getParameterValue(); // Значение текущего параметра
+
+                                $thirdTypeValue =  $district['parameterType'][2]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
+                                //Запись в M1
+                                $M1[$district['id']][$itemValue->getYear()][$itemParameter['parameterId']->getId()][$district['parameterType'][2]['parameters'][$i]['parameterId']->getId()] = $yearValue / $thirdTypeValue;
+
+                            }
+
+
+                            // Для Результаты - Внутренние
+                            for ($i = 0; $i < count($district['parameterType'][3]['parameters']); $i++) { // Перебираем значения второго типа
+
+                                $yearValue = $itemValue->getParameterValue(); // Значение текущего параметра
+
+                                $fourthTypeValue =  $district['parameterType'][3]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
+                                //Запись в M1
+                                $M1[$district['id']][$itemValue->getYear()][$itemParameter['parameterId']->getId()][$district['parameterType'][3]['parameters'][$i]['parameterId']->getId()] = $yearValue / $fourthTypeValue;
+
+
+                            }
+
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+
+        dump($M1);
         return $this->render('AppMatrixMatrixBundle:Page:calculation.html.twig', [
-            'arResult' => $parametersAll
+            //'arResult' => $parametersAll
         ]);
     }
 
