@@ -163,10 +163,12 @@ class CalculationController extends Controller
         }
 
         /**
-         *  Построение и рассчет матриц
+         *  Построение и рассчет матриц. Этап 1
          */
 
         // Перебор районов (districts)
+
+        $M1 = [];
 
         //dump($parametersAll['districts']);
         foreach ($parametersAll['districts'] as $d => $district) {
@@ -248,7 +250,26 @@ class CalculationController extends Controller
         }
 
 
-        dump($M1);
+        /**
+         * Этап 2. Деление одного года на другой
+         */
+
+        foreach ($M1 as $dm => $districtM1) { // Перебор районов
+
+            $maxArray = max($districtM1);
+            $minArray = min($districtM1);
+
+            foreach ($maxArray as $mA => $itemMaxArray) {
+
+                foreach ($itemMaxArray as $iMA => $valueItemMaxArray) {
+
+                    $resultM2[$dm][$mA][$iMA] = $valueItemMaxArray / $minArray[$mA][$iMA];
+
+                }
+            }
+        }
+
+
         return $this->render('AppMatrixMatrixBundle:Page:calculation.html.twig', [
             //'arResult' => $parametersAll
         ]);
