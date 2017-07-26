@@ -192,7 +192,7 @@ class CalculationController extends Controller
 
                                 $thirdTypeValue =  $district['parameterType'][2]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
                                 //Запись в M1
-                                $M1[$district['id']][$itemValue->getYear()][$itemParameter['parameterId']->getId()][$district['parameterType'][2]['parameters'][$i]['parameterId']->getId()] = $yearValue / $thirdTypeValue;
+                                $M1[$district['id']][$itemValue->getYear()]['zone-1'][$itemParameter['parameterId']->getId()][$district['parameterType'][2]['parameters'][$i]['parameterId']->getId()] = $yearValue / $thirdTypeValue;
 
                             }
 
@@ -204,7 +204,7 @@ class CalculationController extends Controller
 
                                 $fourthTypeValue =  $district['parameterType'][3]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
                                 //Запись в M1
-                                $M1[$district['id']][$itemValue->getYear()][$itemParameter['parameterId']->getId()][$district['parameterType'][3]['parameters'][$i]['parameterId']->getId()] = $yearValue / $fourthTypeValue;
+                                $M1[$district['id']][$itemValue->getYear()]['zone-2'][$itemParameter['parameterId']->getId()][$district['parameterType'][3]['parameters'][$i]['parameterId']->getId()] = $yearValue / $fourthTypeValue;
 
 
                             }
@@ -224,7 +224,7 @@ class CalculationController extends Controller
 
                                 $thirdTypeValue =  $district['parameterType'][2]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
                                 //Запись в M1
-                                $M1[$district['id']][$itemValue->getYear()][$itemParameter['parameterId']->getId()][$district['parameterType'][2]['parameters'][$i]['parameterId']->getId()] = $yearValue / $thirdTypeValue;
+                                $M1[$district['id']][$itemValue->getYear()]['zone-3'][$itemParameter['parameterId']->getId()][$district['parameterType'][2]['parameters'][$i]['parameterId']->getId()] = $yearValue / $thirdTypeValue;
 
                             }
 
@@ -236,7 +236,7 @@ class CalculationController extends Controller
 
                                 $fourthTypeValue =  $district['parameterType'][3]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
                                 //Запись в M1
-                                $M1[$district['id']][$itemValue->getYear()][$itemParameter['parameterId']->getId()][$district['parameterType'][3]['parameters'][$i]['parameterId']->getId()] = $yearValue / $fourthTypeValue;
+                                $M1[$district['id']][$itemValue->getYear()]['zone-4'][$itemParameter['parameterId']->getId()][$district['parameterType'][3]['parameters'][$i]['parameterId']->getId()] = $yearValue / $fourthTypeValue;
 
 
                             }
@@ -257,22 +257,86 @@ class CalculationController extends Controller
         $resultM2 = [];
         foreach ($M1 as $dm => $districtM1) { // Перебор районов
 
-            $maxArray = max($districtM1);
-            $minArray = min($districtM1);
+            $maxArray = max($districtM1); // Берем массив с более ранним годом
+            $minArray = min($districtM1); // Берем массив с более поздним годом
 
-            foreach ($maxArray as $mA => $itemMaxArray) {
+            foreach ($maxArray as $iZ => $itemZone) { // Перебираем ранний год
 
-                foreach ($itemMaxArray as $iMA => $valueItemMaxArray) {
+                foreach ($itemZone as $mA => $itemMaxArray) { // Перебираем элементы каждый зоны
 
-                    $resultM2[$dm][$mA][$iMA] = $valueItemMaxArray / $minArray[$mA][$iMA];
+                    foreach ($itemMaxArray as $iMA => $valueItemMaxArray) { // Берем значение кадого элемента зоны
+
+                        $resultM2[$dm][$iZ][$mA][$iMA] = $valueItemMaxArray / $minArray[$iZ][$mA][$iMA]; // Пишем в один структурированный массив  $resultM2[район][зона][элемент][значение]
+                    }
+                }
+            }
+        }
+
+
+
+        /**
+         * Этап 3. Рассчитываются обобщающие коэффициенты внутренней и внешней результативности использования внутренних и внешних ресурсов (матрица М3 - t)
+         */
+
+        $coefficients = []; // Объявляем массив коэффициентов
+
+        foreach ($resultM2 as $rm => $itemResultM2) { // Перебирвем районы
+
+
+            // 1. Зона показателей внешней эффективности (левый-верхний прямоугольник). => Коэффициент мультипликативности
+
+            // 2. Зона показателей внутренней эффективности (правый-верхний прямоугольник). => Коэффициент адаптивности
+
+            // 3. Зона показателей внешней эффективности использования собственных ресурсов (левый-нижний прямоугольник). => Коэффициент синергетичности
+
+            // 4. Зона показателей внутренней эффективности использования собственных ресурсов (правый-нижний прямоугольник). => Коэффициент интенсивности
+
+
+            $kSum = 0; // Обнуляем значене суммы коэффициентов
+            $itemCount = 0; // Обнуляем количество параметров зоны
+
+            foreach ($itemResultM2 as $iZ => $itemZone) { // Перебираем заны
+
+                foreach ($itemZone as $iP => $itemParameter) { // Перебираем параметры
+
+                    $itemCount = $itemCount + count($itemParameter); // Считаем сколько всего параметров
+
+                    foreach ($itemParameter as $iPV => $itemParameterValue) { // Перебираем значения параметра
+
+                        $kSum = $kSum + $itemParameterValue; // Складываем все значения параметров
+
+                    }
 
                 }
+
+                // Задаем имя каждого коэффициента
+                switch ($iZ) {
+                    case 'zone-1':
+                        $coefficients[$rm][$iZ]['name'] = 'Коэффициент мультипликативности';
+                        break;
+                    case 'zone-2':
+                        $coefficients[$rm][$iZ]['name'] = 'Коэффициент адаптивности';
+                        break;
+                    case 'zone-3':
+                        $coefficients[$rm][$iZ]['name'] = 'Коэффициент синергетичности';
+                        break;
+                    case 'zone-4':
+                        $coefficients[$rm][$iZ]['name'] = 'Коэффициент интенсивности';
+                        break;
+                }
+
+                $coefficients[$rm][$iZ]['value'] = $kSum / $itemCount; // Пишем в массив коэффициентов
+
+                $kSum = 0; // Обнуляем значене суммы коэффициентов
+                $itemCount = 0; // Обнуляем количество параметров зоны
+
             }
         }
 
         $arResult['parameters'] = $parametersAll;
         $arResult['M1'] = $M1;
         $arResult['resultM2'] = $resultM2;
+        $arResult['coefficients'] = $coefficients;
 
 
         return $this->render('AppMatrixMatrixBundle:Page:calculation.html.twig', [
