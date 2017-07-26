@@ -55,7 +55,7 @@ class importCSV extends PHPExcel {
                         }
                         if ($k > 0) {
                             $arMD[$i-1]["year"][] = mb_convert_encoding($arMD["head_year"][$k], 'UTF-8', 'Windows-1251' );
-                            $arMD[$i-1]["parameter_value"][$arMD["head_year"][$k]] = mb_convert_encoding($itemData, 'UTF-8', 'Windows-1251' );
+                            $arMD[$i-1]["parameter_value"][$arMD["head_year"][$k]] = floatval(str_replace(',', '.', str_replace(' ', '', strval(mb_convert_encoding( $itemData, 'UTF-8', 'Windows-1251' )))));
                         }
 
 
@@ -78,6 +78,7 @@ class importCSV extends PHPExcel {
             }
 
         }
+
         array_splice($arMD, 0, 1);
         return $arMD;
 

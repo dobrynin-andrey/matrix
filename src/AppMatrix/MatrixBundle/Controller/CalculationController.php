@@ -457,6 +457,11 @@ class CalculationController extends Controller
         $arResult['pointers'] = $pointers;
 
 
+//        dump(floatval(str_replace(',', '.', str_replace(' ', '', '-8 958 ,383 000'))));
+//        dump( floatval('-8 958 ,383 000'));
+//        dump($arResult);
+//        //die();
+
         return $this->render('AppMatrixMatrixBundle:Page:calculation.html.twig', [
             'arResult' => $arResult
         ]);

@@ -49,7 +49,7 @@ class ParameterValues
 
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="float")
      */
     protected $parameter_value;
 
