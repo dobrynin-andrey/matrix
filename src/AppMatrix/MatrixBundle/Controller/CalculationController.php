@@ -333,10 +333,73 @@ class CalculationController extends Controller
             }
         }
 
+
+        /**
+         *  Параметрические признаки «точек роста»
+         */
+
+        /*
+            1. Точка роста с внутренним источником
+            2. Точка роста с внешним источником
+            3. Отрицательная точка роста с внутренним источником
+            4. Отрицательная точка роста с внешним источником
+            5. Точка развития с внутренним источником
+            6. Точка развития с внешним источником
+            7. Точка развития с отрицательным ростом
+            8. Отрицательная точка развития
+
+         */
+
+        $pointers = [];
+
+        foreach ($coefficients as $iD => $itemDistrict) { // Перебирвем районы
+
+            // 1. Точка роста с внутренним источником
+
+            $pointers[$iD]['Точка роста с внутренним источником'] = 3 * $itemDistrict['zone-4']['value'] - $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'];
+
+
+            //  2. Точка роста с внешним источником
+
+            $pointers[$iD]['Точка роста с внешним источником'] = 3 * $itemDistrict['zone-2']['value'] - $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-4']['value'];
+
+
+            //  3. Отрицательная точка роста с внутренним источником
+
+            $pointers[$iD]['Отрицательная точка роста с внутренним источником'] = $itemDistrict['zone-1']['value'] + $itemDistrict['zone-3']['value'] + $itemDistrict['zone-2']['value'] - 3 * $itemDistrict['zone-4']['value'];
+
+
+            // 4. Отрицательная точка роста с внешним источником
+
+            $pointers[$iD]['Отрицательная точка роста с внешним источником'] = $itemDistrict['zone-1']['value'] + $itemDistrict['zone-3']['value'] + $itemDistrict['zone-4']['value'] - 3 * $itemDistrict['zone-2']['value'];
+
+
+            // 5. Точка развития с внутренним источником
+
+            $pointers[$iD]['Точка развития с внутренним источником'] = 3 * $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'] - $itemDistrict['zone-1']['value'];
+
+
+            // 6. Точка развития с внешним источником
+
+            $pointers[$iD]['Точка развития с внешним источником'] = 3 * $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'];
+
+
+            // 7. Точка развития с отрицательным ростом
+
+            $pointers[$iD]['Точка развития с отрицательным ростом'] = 3 * $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - 2 * $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'];
+
+
+            // 8. Отрицательная точка развития
+
+            $pointers[$iD]['Отрицательная точка развития'] = $itemDistrict['zone-3']['value'] + $itemDistrict['zone-2']['value'] + $itemDistrict['zone-4']['value'] - 3 * $itemDistrict['zone-1']['value'];
+
+        }
+
         $arResult['parameters'] = $parametersAll;
         $arResult['M1'] = $M1;
         $arResult['resultM2'] = $resultM2;
         $arResult['coefficients'] = $coefficients;
+        $arResult['pointers'] = $pointers;
 
 
         return $this->render('AppMatrixMatrixBundle:Page:calculation.html.twig', [
