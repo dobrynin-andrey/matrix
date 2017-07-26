@@ -58,7 +58,15 @@
             <div class="project_value"><b>{{ projects.updated|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
         </div>
     </div>
-    <a class="calculation-link" href="/{{ projects.id }}/calculation">Рассчитить проект</a>
+    {% if ((parameters is empty) or (parameters | length != 4)) %}
+    <div data-title="Не заполнены все типы параметров!" class="calculation-link_wrap">
+        <a class="calculation-link calculation-link_no-click" href="#">Рассчитить проект</a>
+    </div>
+    {% else %}
+        <a class="calculation-link" href="/{{ projects.id }}/calculation">Рассчитить проект</a>
+    {% endif %}
+
+    {{ dump(parameters) }}
 {% endblock %}
 
 {% block table_project %}

@@ -257,4 +257,23 @@ form .form_result {
     font-weight: 700;
     position: absolute;
     bottom: 0;
+
+    #wrapper  &_no-click {
+        cursor: not-allowed;
+        pointer-events: none;
+        color: #ccc;
+        position: relative;
+    }
+
+    &_wrap {
+        position: absolute;
+        bottom: 0;
+        &:hover::after {
+            content: attr(data-title);
+            position: absolute;
+            bottom: 30px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    }
 }
