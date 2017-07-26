@@ -278,9 +278,39 @@ class CalculationController extends Controller
          * Этап 3. Рассчитываются обобщающие коэффициенты внутренней и внешней результативности использования внутренних и внешних ресурсов (матрица М3 - t)
          */
 
+        /**
+         *  Также сразу применим:
+         *  Этап 4. Сопоставительный анализ объектов как «точек роста».
+         *
+         *  Расчет интегрированного показателя приоритетности «полюса роста»
+         *
+         *  (Добавим в массив значений "Показатель приоритетности точки роста (ПТР)"
+        )
+         */
+
+        foreach ($districtsInParameterValue as $itemDistrict) { // Формируем массив ID районов из ранее найденного массива
+            array_push($arrDistricts ,$itemDistrict[1]);
+        }
+
+        $districts = $em->getRepository('AppMatrixMatrixBundle:District')->findBy( // Находим объекты из БД
+            ['id' => $arrDistricts]
+        );
+
+
         $coefficients = []; // Объявляем массив коэффициентов
 
         foreach ($resultM2 as $rm => $itemResultM2) { // Перебирвем районы
+
+            /*
+             * Добавим название района в массив коэффиентов
+             */
+
+            foreach ($districts as $itemDistrict) { // Перебираем найденные объекты
+                if ($rm === $itemDistrict->getId()) {  // Сравниваем Id из текущего массива
+                    $coefficients[$rm]['name'] = $itemDistrict->getDistrictName(); // Присваеваем имя текущему элементу массива
+                }
+
+            }
 
 
             // 1. Зона показателей внешней эффективности (левый-верхний прямоугольник). => Коэффициент мультипликативности
@@ -294,6 +324,7 @@ class CalculationController extends Controller
 
             $kSum = 0; // Обнуляем значене суммы коэффициентов
             $itemCount = 0; // Обнуляем количество параметров зоны
+            $coefficientsSum = 0; // Обнуляем сумму всех зон
 
             foreach ($itemResultM2 as $iZ => $itemZone) { // Перебираем заны
 
@@ -326,11 +357,15 @@ class CalculationController extends Controller
                 }
 
                 $coefficients[$rm][$iZ]['value'] = $kSum / $itemCount; // Пишем в массив коэффициентов
+                $coefficientsSum = $coefficientsSum + $coefficients[$rm][$iZ]['value'];
 
                 $kSum = 0; // Обнуляем значене суммы коэффициентов
                 $itemCount = 0; // Обнуляем количество параметров зоны
 
             }
+            $coefficients[$rm]['PTR'] = $coefficientsSum / 4; // Пишем в массив коэффициентов значение Показатель приоритетности точки роста (ПТР)"
+            $coefficientsSum = 0; // Обнуляем сумму всех зон
+
         }
 
 
@@ -394,6 +429,7 @@ class CalculationController extends Controller
             $pointers[$iD]['Отрицательная точка развития'] = $itemDistrict['zone-3']['value'] + $itemDistrict['zone-2']['value'] + $itemDistrict['zone-4']['value'] - 3 * $itemDistrict['zone-1']['value'];
 
         }
+
 
         $arResult['parameters'] = $parametersAll;
         $arResult['M1'] = $M1;
