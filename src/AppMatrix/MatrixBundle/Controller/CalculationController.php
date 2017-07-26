@@ -389,44 +389,63 @@ class CalculationController extends Controller
 
         foreach ($coefficients as $iD => $itemDistrict) { // Перебирвем районы
 
+           /*
+            * Добавим название района в массив точек роста
+            */
+
+            foreach ($districts as $itemDistrictDB) { // Перебираем найденные объекты
+                if ($iD === $itemDistrictDB->getId()) {  // Сравниваем Id из текущего массива
+                    $pointers[$iD]['name'] = $itemDistrictDB->getDistrictName(); // Присваеваем имя текущему элементу массива
+                }
+
+            }
+
             // 1. Точка роста с внутренним источником
 
-            $pointers[$iD]['Точка роста с внутренним источником'] = 3 * $itemDistrict['zone-4']['value'] - $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'];
+            $pointers[$iD]['pointers'][0]['name'] = 'Точка роста с внутренним источником';
+            $pointers[$iD]['pointers'][0]['value'] = 3 * $itemDistrict['zone-4']['value'] - $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'];
 
 
             //  2. Точка роста с внешним источником
 
-            $pointers[$iD]['Точка роста с внешним источником'] = 3 * $itemDistrict['zone-2']['value'] - $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-4']['value'];
+            $pointers[$iD]['pointers'][1]['name'] = 'Точка роста с внешним источником';
+            $pointers[$iD]['pointers'][1]['value'] = 3 * $itemDistrict['zone-2']['value'] - $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-4']['value'];
 
 
             //  3. Отрицательная точка роста с внутренним источником
 
-            $pointers[$iD]['Отрицательная точка роста с внутренним источником'] = $itemDistrict['zone-1']['value'] + $itemDistrict['zone-3']['value'] + $itemDistrict['zone-2']['value'] - 3 * $itemDistrict['zone-4']['value'];
+            $pointers[$iD]['pointers'][2]['name'] = 'Отрицательная точка роста с внутренним источником';
+            $pointers[$iD]['pointers'][2]['value'] = $itemDistrict['zone-1']['value'] + $itemDistrict['zone-3']['value'] + $itemDistrict['zone-2']['value'] - 3 * $itemDistrict['zone-4']['value'];
 
 
             // 4. Отрицательная точка роста с внешним источником
 
-            $pointers[$iD]['Отрицательная точка роста с внешним источником'] = $itemDistrict['zone-1']['value'] + $itemDistrict['zone-3']['value'] + $itemDistrict['zone-4']['value'] - 3 * $itemDistrict['zone-2']['value'];
+            $pointers[$iD]['pointers'][3]['name'] = 'Отрицательная точка роста с внешним источником';
+            $pointers[$iD]['pointers'][3]['value'] = $itemDistrict['zone-1']['value'] + $itemDistrict['zone-3']['value'] + $itemDistrict['zone-4']['value'] - 3 * $itemDistrict['zone-2']['value'];
 
 
             // 5. Точка развития с внутренним источником
 
-            $pointers[$iD]['Точка развития с внутренним источником'] = 3 * $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'] - $itemDistrict['zone-1']['value'];
+            $pointers[$iD]['pointers'][4]['name'] = 'Точка развития с внутренним источником';
+            $pointers[$iD]['pointers'][4]['value'] = 3 * $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'] - $itemDistrict['zone-1']['value'];
 
 
             // 6. Точка развития с внешним источником
 
-            $pointers[$iD]['Точка развития с внешним источником'] = 3 * $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'];
+            $pointers[$iD]['pointers'][5]['name'] = 'Точка развития с внешним источником';
+            $pointers[$iD]['pointers'][5]['value'] = 3 * $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'];
 
 
             // 7. Точка развития с отрицательным ростом
 
-            $pointers[$iD]['Точка развития с отрицательным ростом'] = 3 * $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - 2 * $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'];
+            $pointers[$iD]['pointers'][6]['name'] = 'Точка развития с отрицательным ростом';
+            $pointers[$iD]['pointers'][6]['value'] = 3 * $itemDistrict['zone-1']['value'] - $itemDistrict['zone-3']['value'] - 2 * $itemDistrict['zone-2']['value'] - $itemDistrict['zone-4']['value'];
 
 
             // 8. Отрицательная точка развития
 
-            $pointers[$iD]['Отрицательная точка развития'] = $itemDistrict['zone-3']['value'] + $itemDistrict['zone-2']['value'] + $itemDistrict['zone-4']['value'] - 3 * $itemDistrict['zone-1']['value'];
+            $pointers[$iD]['pointers'][7]['name'] = 'Отрицательная точка развития';
+            $pointers[$iD]['pointers'][7]['value'] = $itemDistrict['zone-3']['value'] + $itemDistrict['zone-2']['value'] + $itemDistrict['zone-4']['value'] - 3 * $itemDistrict['zone-1']['value'];
 
         }
 

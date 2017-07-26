@@ -1,5 +1,58 @@
 {# src/AppMatrix/MatrixBundle/Resources/views/Page/contact.html.twig #}
 {% extends 'AppMatrixMatrixBundle::layout.html.twig' %}
 {% block body %}
-    {{ dump(arResult) }}
+    <section class="main-col main-col__full">
+        <header>
+            <h1>Результаты рассчетов</h1>
+        </header>
+        <div class="table_project_title">Параметрические признаки «точек роста»</div>
+        <table class="table_pointers">
+            <tr>
+                <th>№</th>
+                <th>Объект</th>
+                <th>Тип точки</th>
+                <th>Уровень идентификации точки (УИТ)</th>
+            </tr>
+            {% for key, itemPointers in arResult['pointers'] %}
+                <tr>
+                    <td style="background: #fff;" rowspan="9">{{ loop.index }}</td>
+                    <td style="background: #fff; text-align: left;" rowspan="9">{{ itemPointers['name'] }}</td>
+                </tr>
+                {% for key, item in itemPointers['pointers'] %}
+                    <tr {% if key == 7 %}style="border-bottom: 1px solid #ccc;"{% endif %}>
+                        <td {% if (key is even) %}style="background: rgba(204, 204, 204, 0.2);"{% endif %}>{{ item.name }}</td>
+                        <td {% if (key is even) %}style="background: rgba(204, 204, 204, 0.2);"{% endif %}>{{ item.value }}</td>
+                    </tr>
+                {% endfor %}
+
+            {% endfor %}
+        </table>
+    </section>
+    <section class="main-col main-col__full">
+        <div style="font-size: 22px;" class="table_project_title">Сопоставительный анализ объектов как «точек роста»</div>
+        <div class="table_project_title">Таблица расчета интегрированного показателя приоритетности «полюса роста»</div>
+        <table class="table_project">
+            <tr>
+                <th>№</th>
+                <th>Объект</th>
+                <th>Коэффициент мультипликативности <b>(Kη)</b></th>
+                <th>Коэффициент адаптивности <b>(Kα)</b></th>
+                <th>Коэффициент синергетичности <b>(Kζ)</b></th>
+                <th>Коэффициент интенсивности <b>(Kι)</b></th>
+                <th>Показатель приоритетности</th>
+            </tr>
+            {% for itemCoefficients in arResult['coefficients'] %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ itemCoefficients['name'] }}</td>
+                    <td>{{ itemCoefficients['zone-1']['value'] }}</td>
+                    <td>{{ itemCoefficients['zone-2']['value'] }}</td>
+                    <td>{{ itemCoefficients['zone-3']['value'] }}</td>
+                    <td>{{ itemCoefficients['zone-4']['value'] }}</td>
+                    <td><b>{{ itemCoefficients['PTR'] }}</b></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {#{{ dump(arResult) }}#}
+    </section>
 {% endblock %}

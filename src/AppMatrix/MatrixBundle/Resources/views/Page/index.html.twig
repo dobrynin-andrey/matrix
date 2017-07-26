@@ -2,34 +2,35 @@
 {% extends 'AppMatrixMatrixBundle::layout.html.twig' %}
 
 {% block body %}
-    <div style="display: none">
-        <div class="delete-form" id="delete-form">
+    <section class="main-col main-col__full">
+        <div style="display: none">
+            <div class="delete-form" id="delete-form">
 
-            <div class="delete-form_question">Удалить проект?</div>
-            {{ form(form_delete) }}
+                <div class="delete-form_question">Удалить проект?</div>
+                {{ form(form_delete) }}
+            </div>
         </div>
-    </div>
-    <header>
-        <h1>Создать новый проект:</h1>
-    </header>
+        <header>
+            <h1>Создать новый проект:</h1>
+        </header>
 
-    <p>Введите название нового прокета</p>
+        <p>Введите название нового прокета</p>
 
-    {{ form_start(form, { 'action': path('AppMatrixMatrixBundle_homepage'), 'method': 'POST', 'attr': {'class': 'blogger'} }) }}
+        {{ form_start(form, { 'action': path('AppMatrixMatrixBundle_homepage'), 'method': 'POST', 'attr': {'class': 'blogger'} }) }}
 
-    {{ form_row(form.project_name) }}
+        {{ form_row(form.project_name) }}
 
 
-    {{ form_rest(form) }}
+        {{ form_rest(form) }}
 
-    <input type="submit" value="Далее" />
+        <input type="submit" value="Далее" />
 
-    {% for label, messages in app.session.flashbag.all %}
-        {% for message in messages %}
-            <p class="form_result">{{ message }}</p>
+        {% for label, messages in app.session.flashbag.all %}
+            {% for message in messages %}
+                <p class="form_result">{{ message }}</p>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
-
+    </section>
 {% endblock %}
 {% block table_project %}
     <p>Уже созданные проекты. Всего: {{  projects | length }}</p>

@@ -43,15 +43,11 @@
         </hgroup>
     </header>
 
-    <section class="main-col {% if (app.request.requestUri == "/" or app.request.requestUri == "/about") %}main-col__full{% endif %}">
-        {% block body %}{% endblock %}
-    </section>
+    {% block body %}{% endblock %}
 
-    {% if (app.request.requestUri != "/") %}
-        <aside class="sidebar">
-            {% block sidebar %}{% endblock %}
-        </aside>
-    {% endif %}
+
+    {% block sidebar %}{% endblock %}
+
 
     <section class="main-col main-col_project main-col__full">
         {% block table_project %}{% endblock %}

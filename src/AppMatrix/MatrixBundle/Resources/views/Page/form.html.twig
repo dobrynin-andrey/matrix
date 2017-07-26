@@ -6,67 +6,68 @@
 
 
 {% block body %}
-    <div style="display: none">
-        <div class="delete-form" id="delete-form">
+    <section class="main-col">
+        <div style="display: none">
+            <div class="delete-form" id="delete-form">
 
-            <div class="delete-form_question">Удалить параметр?</div>
-            {{ form(form_delete) }}
+                <div class="delete-form_question">Удалить параметр?</div>
+                {{ form(form_delete) }}
+            </div>
         </div>
-    </div>
-    <header>
-        <h1>Загрузка новых параметров</h1>
-    </header>
+        <header>
+            <h1>Загрузка новых параметров</h1>
+        </header>
 
-    <p>Внесите данные:</p>
+        <p>Внесите данные:</p>
 
-    {{ form_start(form_upload, { 'attr': {'class': 'blogger'} }) }}
+        {{ form_start(form_upload, { 'attr': {'class': 'blogger'} }) }}
 
-    {{ form_errors(form_upload) }}
-    {{ form_row(form_upload.project_id) }}
-    {{ form_row(form_upload.parameter_type) }}
-    {{ form_row(form_upload.parameter_name) }}
-    {{ form_row(form_upload.district_type) }}
-    <p>Загрузите файл .csv с данными параметра. Пример файла импорта: <a target="_blank" rel="nofollow" href="{{ asset('upload/import_csv/Productions-sh_standart.csv') }}">Посмотреть</a></p>
-    {{ form_row(form_upload.file) }}
+        {{ form_errors(form_upload) }}
+        {{ form_row(form_upload.project_id) }}
+        {{ form_row(form_upload.parameter_type) }}
+        {{ form_row(form_upload.parameter_name) }}
+        {{ form_row(form_upload.district_type) }}
+        <p>Загрузите файл .csv с данными параметра. Пример файла импорта: <a target="_blank" rel="nofollow" href="{{ asset('upload/import_csv/Productions-sh_standart.csv') }}">Посмотреть</a></p>
+        {{ form_row(form_upload.file) }}
 
-    {{ form_rest(form_upload) }}
+        {{ form_rest(form_upload) }}
 
 
-    <input type="submit" value="Загрузить" />
+        <input type="submit" value="Загрузить" />
 
-    {% for label, messages in app.session.flashbag.all %}
-        {% for message in messages %}
-            <p class="form_result">{{ message }}</p>
+        {% for label, messages in app.session.flashbag.all %}
+            {% for message in messages %}
+                <p class="form_result">{{ message }}</p>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
-
+    </section>
 {% endblock %}
 
 {% block sidebar %}
-    <div class="project_sidebar">
-        <div class="project_title">Текущий проект:</div>
-        <div class="project_row">
-            <div class="project_name">Имя: </div>
-            <div class="project_value"><b>{{ projects.projectName }}</b></div>
+    <aside class="sidebar">
+        <div class="project_sidebar">
+            <div class="project_title">Текущий проект:</div>
+            <div class="project_row">
+                <div class="project_name">Имя: </div>
+                <div class="project_value"><b>{{ projects.projectName }}</b></div>
+            </div>
+            <div class="project_row">
+                <div class="project_name">Дата создания: </div>
+                <div class="project_value"><b>{{ projects.created|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
+            </div>
+            <div class="project_row">
+                <div class="project_name">Дата изменения: </div>
+                <div class="project_value"><b>{{ projects.updated|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
+            </div>
         </div>
-        <div class="project_row">
-            <div class="project_name">Дата создания: </div>
-            <div class="project_value"><b>{{ projects.created|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
+        {% if ((parameters is empty) or (parameters | length != 4)) %}
+        <div data-title="Не заполнены все типы параметров!" class="calculation-link_wrap">
+            <a class="calculation-link calculation-link_no-click" href="#">Рассчитить проект</a>
         </div>
-        <div class="project_row">
-            <div class="project_name">Дата изменения: </div>
-            <div class="project_value"><b>{{ projects.updated|date("d.m.y : H:i", "Asia/Krasnoyarsk") }}</b></div>
-        </div>
-    </div>
-    {% if ((parameters is empty) or (parameters | length != 4)) %}
-    <div data-title="Не заполнены все типы параметров!" class="calculation-link_wrap">
-        <a class="calculation-link calculation-link_no-click" href="#">Рассчитить проект</a>
-    </div>
-    {% else %}
-        <a class="calculation-link" href="/{{ projects.id }}/calculation">Рассчитить проект</a>
-    {% endif %}
-
-    {{ dump(parameters) }}
+        {% else %}
+            <a class="calculation-link" href="/{{ projects.id }}/calculation">Рассчитить проект</a>
+        {% endif %}
+    </aside>
 {% endblock %}
 
 {% block table_project %}
