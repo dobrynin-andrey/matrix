@@ -1,7 +1,7 @@
 {# src/AppMatrix/MatrixBundle/Resources/views/Page/contact.html.twig #}
 {% extends 'AppMatrixMatrixBundle::layout.html.twig' %}
 {% block yandex_maps %}
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&coordorder=longlat" type="text/javascript"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&coordorder=longlat&mode=debug" type="text/javascript"></script>
 {% endblock %}
 {% block body %}
 <section id="wrapper">
@@ -35,6 +35,7 @@
             $.each(regionNames, function (i, item) {
                 $.getJSON(url, {q: region + item, format: "json", polygon_geojson: 1, limit: 1}).then(function (data) {
                     if (data.length == 0) {
+                        $('.errors-map').append('Объект с именем: ' + item + ' - отсутствует в базе карт!<br>');
                         console.log('Объект с именем: ' + item + ' - отсутствует в базе карт!');
                     } else  {
                     $.each(data, function(ix, place) {
@@ -68,8 +69,10 @@
     </script>
 
 
+
 <section id="wrapper">
     <section class="main-col main-col__full">
+        <p style="color: red; font-size: 16px;" class="errors-map"></p>
         <div class="table_project_title">Параметрические признаки «точек роста»</div>
         <table class="table_pointers">
             <tr>
