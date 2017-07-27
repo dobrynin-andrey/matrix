@@ -3,6 +3,7 @@
 {% block yandex_maps %}
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&coordorder=longlat&mode=debug" type="text/javascript"></script>
 {% endblock %}
+{% block title %}{{ projects.projectName }} | Рассчет результатов{% endblock%}
 {% block body %}
 <section id="wrapper">
     <section class="main-col main-col__full">
@@ -124,4 +125,43 @@
     {#{{ dump(arResult) }}#}
     </section>
 </section>
+{% endblock %}
+{% block table_project %}
+    <section class="main-col main-col_project main-col__full">
+        <div class="chart-container" style="position: relative;  width:100%">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <script>
+
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ (arResult['districtMaps'] | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
+                    datasets: [{
+                        label: 'Показатель приоритетности',
+                        data: {{ (coefficientsJSON['PTR'] | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
+                        backgroundColor: [
+                            'rgba(244, 138, 0, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(244, 138, 0, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+
+    </section>
 {% endblock %}

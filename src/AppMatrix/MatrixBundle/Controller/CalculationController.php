@@ -298,6 +298,7 @@ class CalculationController extends Controller
 
 
         $coefficients = []; // Объявляем массив коэффициентов
+        $coefficientsJSON = []; // Объявляем массив коэффициентов для JSON
 
         foreach ($resultM2 as $rm => $itemResultM2) { // Перебирвем районы
 
@@ -364,6 +365,7 @@ class CalculationController extends Controller
 
             }
             $coefficients[$rm]['PTR'] = $coefficientsSum / 4; // Пишем в массив коэффициентов значение Показатель приоритетности точки роста (ПТР)"
+            $coefficientsJSON['PTR'][] = $coefficientsSum / 4; // Запишем данные для JSON
             $coefficientsSum = 0; // Обнуляем сумму всех зон
 
         }
@@ -459,14 +461,13 @@ class CalculationController extends Controller
         $arResult['resultM2'] = $resultM2;
         $arResult['coefficients'] = $coefficients;
         $arResult['pointers'] = $pointers;
-
         $arResult['districtMaps'] = $districtMaps;
-        //json_encode($districtMaps, JSON_UNESCAPED_UNICODE);
-//       dump($arResult['districtMaps']);
-//        die();
+
 
         return $this->render('AppMatrixMatrixBundle:Page:calculation.html.twig', [
-            'arResult' => $arResult
+            'arResult' => $arResult,
+            'projects' => $project,
+            'coefficientsJSON' => $coefficientsJSON
         ]);
     }
 

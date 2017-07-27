@@ -22,6 +22,9 @@
     {% endblock %}
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
     {% block yandex_maps %}{% endblock %}
+    {% block javascripts %}
+        <script src="{{ asset('js/bundle.js') }}"></script>
+    {% endblock %}
 </head>
 <body>
 
@@ -50,9 +53,9 @@
     {% block sidebar %}{% endblock %}
 
 
-    <section class="main-col main-col_project main-col__full">
-        {% block table_project %}{% endblock %}
-    </section>
+
+    {% block table_project %}{% endblock %}
+
     {% block table_district %}{% endblock %}
 
     <div id="footer">
@@ -61,9 +64,7 @@
         {% endblock %}
     </div>
 </section>
-{% block javascripts %}
-    <script src="{{ asset('js/bundle.js') }}"></script>
-{% endblock %}
+
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript" >
     (function (d, w, c) {

@@ -73,6 +73,7 @@
 {% endblock %}
 
 {% block table_project %}
+<section class="main-col main-col_project main-col__full">
     <p>Уже загруженные параметры. Всего: {{ parametersLength }}</p>
     {% if parameters | length > 0 %}
         {% for itemParameter in parameters %}
@@ -111,6 +112,7 @@
             </tr>
         </table>
     {% endif %}
+</section>
 {% endblock %}
 
 {% block table_district %}

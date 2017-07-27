@@ -35,6 +35,7 @@
 </section>
 {% endblock %}
 {% block table_project %}
+<section class="main-col main-col_project main-col__full">
     <p>Уже созданные проекты. Всего: {{  projects | length }}</p>
     <table class="table_project table_project_delete">
         <tr>
@@ -62,4 +63,5 @@
             </tr>
         {% endif %}
     </table>
+</section>
 {% endblock %}

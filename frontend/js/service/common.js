@@ -4,6 +4,10 @@ require("jquery-mousewheel");
 import fancybox from 'fancybox';
 fancybox($);
 
+require('chart.js');
+import Chart from 'chart.js';
+
+
 $(document).ready(function () {
     $('#delete-link').fancybox();
 
