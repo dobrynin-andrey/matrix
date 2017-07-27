@@ -386,6 +386,7 @@ class CalculationController extends Controller
          */
 
         $pointers = [];
+        $districtMaps = [];
 
         foreach ($coefficients as $iD => $itemDistrict) { // Перебирвем районы
 
@@ -396,6 +397,9 @@ class CalculationController extends Controller
             foreach ($districts as $itemDistrictDB) { // Перебираем найденные объекты
                 if ($iD === $itemDistrictDB->getId()) {  // Сравниваем Id из текущего массива
                     $pointers[$iD]['name'] = $itemDistrictDB->getDistrictName(); // Присваеваем имя текущему элементу массива
+
+                    // Дополнительный массив для карты
+                    $districtMaps[] = str_replace(' муниципальный', '',$itemDistrictDB->getDistrictName());
                 }
 
             }
@@ -456,11 +460,10 @@ class CalculationController extends Controller
         $arResult['coefficients'] = $coefficients;
         $arResult['pointers'] = $pointers;
 
-
-//        dump(floatval(str_replace(',', '.', str_replace(' ', '', '-8 958 ,383 000'))));
-//        dump( floatval('-8 958 ,383 000'));
-//        dump($arResult);
-//        //die();
+        $arResult['districtMaps'] = $districtMaps;
+        //json_encode($districtMaps, JSON_UNESCAPED_UNICODE);
+//       dump($arResult['districtMaps']);
+//        die();
 
         return $this->render('AppMatrixMatrixBundle:Page:calculation.html.twig', [
             'arResult' => $arResult

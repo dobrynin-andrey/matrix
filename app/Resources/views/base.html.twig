@@ -21,6 +21,7 @@
         <link href="{{ asset('css/style.css') }}" type="text/css" rel="stylesheet" />
     {% endblock %}
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    {% block yandex_maps %}{% endblock %}
 </head>
 <body>
 
@@ -42,9 +43,9 @@
             <h3>{% block blog_tagline %}<a href="{{ path('AppMatrixMatrixBundle_homepage') }}">creating a matrix methodology in Symfony2</a>{% endblock %}</h3>
         </hgroup>
     </header>
-
+</section>
     {% block body %}{% endblock %}
-
+<section id="wrapper">
 
     {% block sidebar %}{% endblock %}
 
