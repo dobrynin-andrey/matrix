@@ -17,8 +17,7 @@
     <div id="map" style="width: 100%; height: 700px"></div>
     <script>
         ymaps.ready(function() {
-
-    // 0. Создаем карту, например так:
+            // 0. Создаем карту:
             var map,
                 regionNames = {{ (arResult['districtMaps'] | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
                 region = 'Алтайский ',
@@ -31,7 +30,7 @@
                 controls: ['zoomControl', 'fullscreenControl']
             });
             map.behaviors.disable('scrollZoom');
-    // 1. Запрашиваем через геокодер район (у Яндекса этой возможности пока нет, придется пользоваться OSM)
+            // 1. Запрашиваем через геокодер район (у Яндекса этой возможности пока нет, придется пользоваться OSM)
             var url = "http://nominatim.openstreetmap.org/search";
             $.each(regionNames, function (i, item) {
                 $.getJSON(url, {q: region + item, format: "json", polygon_geojson: 1, limit: 1}).then(function (data) {
@@ -42,12 +41,18 @@
                     $.each(data, function(ix, place) {
 
                         if ("relation" == place.osm_type) {
-    // 2. Создаем полигон с нужными координатами
+                                // 2. Создаем полигон с нужными координатами
 
                                 var p = new ymaps.Polygon(place.geojson.coordinates, {
                                     // Описываем свойства геообъекта.
                                     // Содержимое балуна.
-                                    hintContent: item
+                                    // Описываем данные геообъекта.
+
+                                    hintContent: item,
+                                    balloonContentHeader: item,
+                                    balloonContentBody: place.display_name,
+                                    balloonContentFooter: '<a style="color: #F48A00;" href="#growth-point-id-'+ i +'">Параметрический признак «точки роста»</a><br>' +
+                                    '<a style="color: #F48A00;" href="#growth-pole-id-'+ i +'">Показатель приоритетности «полюса роста»</a>',
                                 }, {
                                     // Задаем опции геообъекта.
                                     // Цвет заливки.
@@ -56,7 +61,6 @@
                                     strokeWidth: 2,
                                     strokeColor: '#000'
                                 });
-                                //Polygon(place.geojson.coordinates);
                                 // 3. Добавляем полигон на карту
                                 map.geoObjects.add(p);
                             }
@@ -68,9 +72,6 @@
             });
         });
     </script>
-
-
-
 <section id="wrapper">
     <section class="main-col main-col__full">
         <p style="color: red; font-size: 16px;" class="errors-map"></p>
@@ -82,10 +83,11 @@
                 <th>Тип точки</th>
                 <th>Уровень идентификации точки (УИТ)</th>
             </tr>
+            {#{{ dump(arResult['pointers']) }}#}
             {% for key, itemPointers in arResult['pointers'] %}
                 <tr>
                     <td style="background: #fff;" rowspan="9">{{ loop.index }}</td>
-                    <td style="background: #fff; text-align: left;" rowspan="9">{{ itemPointers['name'] }}</td>
+                    <td id="growth-point-id-{{ loop.index0 }}" style="background: #fff; text-align: left;" rowspan="9">{{ itemPointers['name'] }}</td>
                 </tr>
                 {% for key, item in itemPointers['pointers'] %}
                     <tr {% if key == 7 %}style="border-bottom: 1px solid #ccc;"{% endif %}>
@@ -111,7 +113,7 @@
                 <th>Показатель приоритетности</th>
             </tr>
             {% for itemCoefficients in arResult['coefficients'] %}
-                <tr>
+                <tr id="growth-pole-id-{{ loop.index0 }}">
                     <td>{{ loop.index }}</td>
                     <td>{{ itemCoefficients['name'] }}</td>
                     <td>{{ itemCoefficients['zone-1']['value'] }}</td>
@@ -122,7 +124,6 @@
                 </tr>
             {% endfor %}
         </table>
-    {#{{ dump(arResult) }}#}
     </section>
 </section>
 {% endblock %}
@@ -131,9 +132,7 @@
         <div class="chart-container" style="position: relative;  width:100%">
             <canvas id="myChart"></canvas>
         </div>
-
         <script>
-
             var ctx = document.getElementById("myChart");
             var myChart = new Chart(ctx, {
                 type: 'line',
@@ -162,6 +161,5 @@
                 }
             });
         </script>
-
     </section>
 {% endblock %}
