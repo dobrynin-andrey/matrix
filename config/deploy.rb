@@ -3,6 +3,8 @@ lock "3.9.0"
 
 set :application, "matrix"
 set :repo_url, "git@github.com:dobrynin-andrey/matrix.git"
+set :deploy_to, "/home/host1604557/app-matrix.tk/production"
+set :tmp_dir, '/home/host1604557/.tmp'
 
 # symfony-standard edition directories
 set :app_path, "app"
