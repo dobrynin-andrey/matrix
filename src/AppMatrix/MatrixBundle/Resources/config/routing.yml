@@ -27,3 +27,9 @@ AppMatrixMatrixBundle_calculation:
     defaults: { _controller: "AppMatrixMatrixBundle:Calculation:calculation" }
     requirements:
        #id:  '\d+'
+AppMatrixMatrixBundle_parameters:
+   path:  /parameters/{id}/
+   methods:  ['GET', 'POST']
+   defaults: { _controller: "AppMatrixMatrixBundle:Parameters:parameters" }
+   requirements:
+      #id:  '\d+'

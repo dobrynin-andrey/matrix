@@ -1,0 +1,97 @@
+{# src/AppMatrix/MatrixBundle/Resources/views/Page/contact.html.twig #}
+{% extends 'AppMatrixMatrixBundle::layout.html.twig' %}
+
+{% block title %}{{ param.parameterName }}{% endblock %}
+
+{% dump(parameters) %}
+
+{% block table_project %}
+    <section class="main-col main-col__full">
+        <div class="chart-container" style="position: relative;  width:100%">
+            <canvas id="myChart"></canvas>
+        </div>
+        {% dump(graph | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) %}
+        {% dump(graphLabels | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) %}
+        <script>
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ (graphLabels | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
+                    datasets: [
+                            {% for year ,item in graph %}{
+                        label: {{ year }},
+                        data: {{ (item | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
+                        backgroundColor: [
+                            'rgba(244, 138, 0, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(244, 138, 0, 1)'
+                        ],
+                        borderWidth: 2
+                    },
+                        {% endfor %}]
+                },
+                options: {
+                    scaleShowValues: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                autoSkip: false
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    </section>
+{% endblock %}
+
+
+{% block table_district %}
+    <section class="main-col main-col_project main-col__full">
+        <p>Районы исследования. Всего: {{ parameters | length }}</p>
+        {% if parameters | length > 0 %}
+            <table class="table_project">
+                <tr>
+                    <th>№</th>
+                    <th>Название района</th>
+                    <th>Год</th>
+                    <th>Значение</th>
+                </tr>
+                {% for  itemParam in parameters %}
+                    <tr style="border-top: 1px solid rgba(204, 204, 204, 0.2);" >
+                        <td rowspan="2">{{ loop.index }}</td>
+                        <td rowspan="2">{{ itemParam.name }}</td>
+
+                    {% for key, year in itemParam.values %}
+
+                        <td>{{ key }}</td>
+                        <td style="text-align: center">{{ year }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </table>
+        {% else %}
+            <table class="table_project">
+                <tr>
+                    <th>№</th>
+                    <th>Название района</th>
+                    <th>Тип района</th>
+                    <th>Дата создания</th>
+                    <th>Дата изменения</th>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: center;">
+                        <b>Районы исследования еще не загружены!</b>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+    </section>
+{% endblock %}

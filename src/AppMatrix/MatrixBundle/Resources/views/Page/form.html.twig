@@ -87,9 +87,10 @@
                     <th>Удалить</th>
                 </tr>
                     {% for item in itemParameter['value'] %}
+                        {% dump(item) %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td>{{ item.parameterName }}</td>
+                            <td><a href="/parameters/{{ item.id }}">{{ item.parameterName }}</a></td>
                             <td>{{ item.created | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
                             <td>{{ item.updated | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
                             <td><a class="delete-link" id="delete-link" data-delete="{{ item.id }}" href="#delete-form">Удалить</a></td>

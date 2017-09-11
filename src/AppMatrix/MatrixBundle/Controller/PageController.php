@@ -159,6 +159,7 @@ class PageController extends Controller
             }
 
         }
+        dump($parametersAll);
 
         // Выводим районы текущего проекта
         /** @var  $qb  \Doctrine\ORM\QueryBuilder */
