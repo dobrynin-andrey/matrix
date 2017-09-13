@@ -3,15 +3,13 @@
 
 {% block title %}{{ param.parameterName }}{% endblock %}
 
-{% dump(parameters) %}
 
 {% block table_project %}
     <section class="main-col main-col__full">
         <div class="chart-container" style="position: relative;  width:100%">
             <canvas id="myChart"></canvas>
         </div>
-        {% dump(graph | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) %}
-        {% dump(graphLabels | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) %}
+
         <script>
             var ctx = document.getElementById("myChart");
             var myChart = new Chart(ctx, {

@@ -31,7 +31,6 @@ class ParametersController extends Controller
 
 
             // Массив для графика
-            //$arResult["years"][$itemPV->getYear()][$ipv]["district"] = $districtValues[0]->getDistrictName();
 
             $arResult["years"][$itemPV->getYear()][] = $itemPV->getParameterValue();
 
@@ -42,7 +41,6 @@ class ParametersController extends Controller
 
         }
 
-        dump($arResult["years"]);
 
         return $this->render('AppMatrixMatrixBundle:Page:parameters.html.twig', array(
             'param' => $parameters,
