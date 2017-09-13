@@ -83,7 +83,6 @@
                 <th>Тип точки</th>
                 <th>Уровень идентификации точки (УИТ)</th>
             </tr>
-            {#{{ dump(arResult['pointers']) }}#}
             {% for key, itemPointers in arResult['pointers'] %}
                 <tr>
                     <td style="background: #fff;" rowspan="9">{{ loop.index }}</td>
@@ -132,8 +131,6 @@
         <div class="chart-container" style="position: relative;  width:100%">
             <canvas id="myChart"></canvas>
         </div>
-        {% dump(arResult['districtMaps']) %}
-        {% dump(arResult['districtMaps'] | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) %}
         <script>
             var ctx = document.getElementById("myChart");
             var myChart = new Chart(ctx, {

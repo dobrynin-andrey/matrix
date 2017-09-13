@@ -87,7 +87,6 @@
                     <th>Удалить</th>
                 </tr>
                     {% for item in itemParameter['value'] %}
-                        {% dump(item) %}
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td><a href="/parameters/{{ item.id }}">{{ item.parameterName }}</a></td>
