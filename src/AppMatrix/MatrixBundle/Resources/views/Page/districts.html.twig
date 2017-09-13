@@ -1,12 +1,14 @@
 {# src/AppMatrix/MatrixBundle/Resources/views/Page/contact.html.twig #}
 {% extends 'AppMatrixMatrixBundle::layout.html.twig' %}
 
-{% block title %}{{ param.parameterName }}{% endblock %}
+
+{% block title %}{{ district.districtName }}{% endblock %}
 
 
 {% block table_project %}
     <section class="main-col main-col__full">
-        <h1>{{ param.parameterName }}</h1>
+        <h1>Район: <b>{{ district.districtName }}</b></h1>
+        <h3>Проект: <b>{{ project.projectName }}</b></h3>
         <div class="chart-container" style="position: relative;  width:100%">
             <canvas id="myChart"></canvas>
         </div>
@@ -14,22 +16,25 @@
         <script>
             var ctx = document.getElementById("myChart");
             var myChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
-                    labels: {{ (graphLabels | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
+                    labels: {{ (parameters_graph.labels | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
                     datasets: [
-                            {% for year ,item in graph %}{
-                        label: {{ year }},
-                        data: {{ (item | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
-                        backgroundColor: [
-                            'rgba(244, 138, 0, 0.5)'
-                        ],
-                        borderColor: [
-                            'rgba(244, 138, 0, 1)'
-                        ],
+                    {% for year, item in parameters_graph.item %}
+                    {
+                        label: {{ (year | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
+                        data: {{ (item.value | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
+                        {% if (year is even) %}
+                        backgroundColor: 'rgba(244, 138, 0, 0.5)',
+                        borderColor: 'rgba(244, 138, 0, 1)',
+                        borderWidth: 2,
+                        {% else %}
+                        backgroundColor: 'rgba(128, 122, 115, 0.5)',
+                        borderColor: 'rgba(128, 122, 115, 1)',
                         borderWidth: 2
+                        {% endif %}
                     },
-                        {% endfor %}]
+                    {% endfor %}]
                 },
                 options: {
                     scaleShowValues: true,
@@ -54,21 +59,21 @@
 
 {% block table_district %}
     <section class="main-col main-col_project main-col__full">
-        <p>Районы исследования. Всего: {{ parameters | length }}</p>
-        {% if parameters | length > 0 %}
+        <p>Параметры исследования. Всего: {{ parameters_table | length }}</p>
+        {% if parameters_table | length > 0 %}
             <table class="table_project">
                 <tr>
                     <th>№</th>
-                    <th>Название района</th>
+                    <th>Название параметра</th>
                     <th>Год</th>
                     <th>Значение</th>
                 </tr>
-                {% for  itemParam in parameters %}
+                {% for  itemParam in parameters_table %}
                     <tr style="border-top: 1px solid rgba(204, 204, 204, 0.2);" >
                         <td rowspan="2">{{ loop.index }}</td>
-                        <td rowspan="2"><a href="/{{ itemParam.project }}/district/{{ itemParam.id }}/">{{ itemParam.name }}</a></td>
+                        <td rowspan="2"><a href="/parameters/{{ itemParam.id }}/">{{ itemParam.name }}</a></td>
 
-                    {% for key, year in itemParam.values %}
+                    {% for key, year in itemParam.value %}
 
                         <td>{{ key }}</td>
                         <td style="text-align: center">{{ year }}</td>

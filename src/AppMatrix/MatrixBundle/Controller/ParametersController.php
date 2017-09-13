@@ -27,6 +27,10 @@ class ParametersController extends Controller
 
             $arResult["districts"][$districtValues[0]->getId()]["name"] = $districtValues[0]->getDistrictName();
 
+            $arResult["districts"][$districtValues[0]->getId()]["id"] = $itemPV->getDistrict()->getId();
+
+            $arResult["districts"][$districtValues[0]->getId()]["project"] = $itemPV->getProject()->getId();
+
             $arResult["districts"][$districtValues[0]->getId()]["values"][$itemPV->getYear()] = $itemPV->getParameterValue();
 
 
@@ -40,7 +44,6 @@ class ParametersController extends Controller
 
 
         }
-
 
         return $this->render('AppMatrixMatrixBundle:Page:parameters.html.twig', array(
             'param' => $parameters,
