@@ -159,8 +159,7 @@ class PageController extends Controller
             }
 
         }
-        dump($parametersAll);
-
+        
         // Выводим районы текущего проекта
         /** @var  $qb  \Doctrine\ORM\QueryBuilder */
         $qb = $em->getRepository("AppMatrixMatrixBundle:ParameterValues")->createQueryBuilder("d");
