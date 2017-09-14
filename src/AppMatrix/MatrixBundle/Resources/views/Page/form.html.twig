@@ -130,7 +130,7 @@
                 {% for itemDistrict in districts %}
                     <tr>
                         <td>{{ loop.index }}</td>
-                        <td>{{ itemDistrict.districtName }}</td>
+                        <td><a href="/{{ projects.id }}/district/{{ itemDistrict.id }}">{{ itemDistrict.districtName }}</a></td>
                         <td>{{ itemDistrict.districtType }}</td>
                         <td>{{ itemDistrict.created | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>
                         <td>{{ itemDistrict.updated | date("d.m.Y : H:i", "Asia/Krasnoyarsk") }}</td>

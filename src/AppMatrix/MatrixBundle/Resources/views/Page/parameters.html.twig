@@ -21,13 +21,15 @@
                             {% for year ,item in graph %}{
                         label: {{ year }},
                         data: {{ (item | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
-                        backgroundColor: [
-                            'rgba(244, 138, 0, 0.5)'
-                        ],
-                        borderColor: [
-                            'rgba(244, 138, 0, 1)'
-                        ],
-                        borderWidth: 2
+                            {% if (year is even) %}
+                            backgroundColor: 'rgba(244, 138, 0, 0.5)',
+                            borderColor: 'rgba(244, 138, 0, 1)',
+                            borderWidth: 2,
+                            {% else %}
+                            backgroundColor: 'rgba(128, 122, 115, 0.5)',
+                            borderColor: 'rgba(128, 122, 115, 1)',
+                            borderWidth: 2
+                            {% endif %}
                     },
                         {% endfor %}]
                 },
