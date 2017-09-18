@@ -277,3 +277,42 @@ form .form_result {
         }
     }
 }
+
+/** Табы **/
+.tabs {
+    margin: 20px 0 ;
+    &_head {
+        //border-top: 1px solid #ccc;
+        width: 1200px;
+        margin: 20px auto;
+
+        &__title {
+            display: inline-block;
+            width: 50%;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 5px solid #ffd49c;
+            cursor: pointer;
+
+            &:last-child {
+                float: right;
+            }
+        }
+
+    }
+    &_pic {
+        margin: auto;
+        text-align: center;
+    }
+    &_map {
+
+
+    }
+}
+.close-tab {
+    display: none;
+}
+.active_title {
+    border-bottom: 5px solid #F48A00;
+    background-color: rgba(225, 225, 225, 0.2);
+}

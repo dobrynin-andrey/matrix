@@ -18,9 +18,12 @@
     },
     "require": {
         "php": ">=5.3.9",
+        "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-bundle": "~1.4",
+        "doctrine/doctrine-fixtures-bundle": "dev-master",
         "doctrine/orm": "^2.4.8",
         "incenteev/composer-parameter-handler": "~2.0",
+        "kriswallsmith/buzz": "^0.15.1",
         "phpoffice/phpexcel": "^1.8",
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.2",
@@ -28,9 +31,7 @@
         "symfony/swiftmailer-bundle": "~2.3,>=2.3.10",
         "symfony/symfony": "2.8.*",
         "symfony/var-dumper": "^3.3",
-        "twig/twig": "^1.0||^2.0",
-        "doctrine/doctrine-fixtures-bundle": "dev-master",
-        "doctrine/data-fixtures" : "dev-master"
+        "twig/twig": "^1.0||^2.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",

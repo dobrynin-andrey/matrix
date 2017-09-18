@@ -19,6 +19,19 @@ $(document).ready(function () {
         $.fancybox.close( $('#delete-link') );
     });
 
+    $('.js-tabs_pic').on("click", function () {
+        $(this).addClass('active_title');
+        $(".tabs_pic").removeClass('close-tab');
+        $(".js-tabs_map").removeClass('active_title');
+        $(".tabs_map").addClass('close-tab');
+    });
+    $('.js-tabs_map').on("click", function () {
+        $(this).addClass('active_title');
+        $(".tabs_map").removeClass('close-tab');
+        $(".js-tabs_pic").removeClass('active_title');
+        $(".tabs_pic").addClass('close-tab');
+    });
+
 
     /**
      * Плавный скролл

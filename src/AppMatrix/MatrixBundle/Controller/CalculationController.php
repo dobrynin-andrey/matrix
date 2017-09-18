@@ -10,6 +10,8 @@ use AppMatrix\MatrixBundle\Entity\Parameter;
 use AppMatrix\MatrixBundle\Entity\ParameterType;
 use AppMatrix\MatrixBundle\Entity\ParameterValues;
 use Symfony\Component\HttpFoundation\Request;
+use Buzz\Browser;
+use CURLFile;
 
 class CalculationController extends Controller
 {
@@ -402,6 +404,55 @@ class CalculationController extends Controller
 
                     // Дополнительный массив для карты
                     $districtMaps[] = str_replace(' муниципальный', '',$itemDistrictDB->getDistrictName());
+                   // $itemDistrictName = str_replace(' муниципальный', '',$itemDistrictDB->getDistrictName());
+                   // $url = 'http://nominatim.openstreetmap.org/search?q=Алтайский ' . $itemDistrictName . '&format=json&polygon_geojson=1';
+                    //$r = Request::create( 'http://nominatim.openstreetmap.org/search?q=Алтайский ' . $itemDistrictName . '&format=json&polygon_geojson=1', 'GET' );
+
+                    //$jsonout = json_decode($r);
+                   // print_r($jsonout[0]);
+                    //dump($r);
+                   /* $curl = new Curl();
+                    $browser = new Browser();
+                    $browser->setClient($curl);
+                    $response = $browser->get('http://nominatim.openstreetmap.org/search?q=Алтайский ' . $itemDistrictName . '&format=json&polygon_geojson=1');
+
+                    //$districtMaps["JSON"] = $browser->getLastRequest()."\n";
+// $response is an object.
+// You can use $response->getContent() or $response->getHeaders() to get only one part of the response.
+                    $districtMaps["JSON"][] = $response->getContent();
+                    dump($districtMaps);*/
+
+                   /* // инициализируем cURL
+                    $curl = curl_init();
+                    //Дальше устанавливаем опции запроса в любом порядке
+//Здесь устанавливаем URL к которому нужно обращаться
+                    curl_setopt($curl, CURLOPT_URL, $url);
+//Настойка опций cookie
+                    curl_setopt($curl, CURLOPT_COOKIEJAR, 'cook.txt');//сохранить куки в файл
+                    curl_setopt($curl, CURLOPT_COOKIEFILE, 'cook.txt');//считать куки из файла
+//устанавливаем наш вариат клиента (браузера) и вид ОС
+                    curl_setopt($curl, CURLOPT_USERAGENT, "Opera/10.00 (Windows NT 5.1; U; ru) Presto/2.2.0");
+//Установите эту опцию в ненулевое значение, если вы хотите, чтобы PHP завершал работу скрыто, если возвращаемый HTTP-код имеет значение выше 300. По умолчанию страница возвращается нормально с игнорированием кода.
+                    curl_setopt($curl, CURLOPT_FAILONERROR, 1);
+//Устанавливаем значение referer - адрес последней активной страницы
+                    //curl_setopt($curl, CURLOPT_REFERER, 'http://www.olark.com/');
+//Максимальное время в секундах, которое вы отводите для работы CURL-функций.
+                    curl_setopt($curl, CURLOPT_TIMEOUT, 3);
+                    curl_setopt($curl, CURLOPT_HTTPGET, 1); // устанавливаем метод POST
+//ответственный момент здесь мы передаем наши переменные
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $url);
+//Установите эту опцию в ненулевое значение, если вы хотите, чтобы шапка/header ответа включалась в вывод.
+                    curl_setopt($curl, CURLOPT_HEADER, 0);
+//Внимание, важный момент, сертификатов, естественно, у нас нет, так что все отключаем
+                    curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, 0);// не проверять SSL сертификат
+                    curl_setopt ($curl, CURLOPT_SSL_VERIFYHOST, 0);// не проверять Host SSL сертификата
+                    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);// разрешаем редиректы
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                    $html = curl_exec($curl); // выполняем запрос и записываем в переменную
+                    curl_close($curl); // заканчиваем работу curl
+                    dump($html);
+
+                    die();*/
                 }
 
             }

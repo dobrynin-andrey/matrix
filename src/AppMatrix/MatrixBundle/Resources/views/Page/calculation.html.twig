@@ -5,18 +5,87 @@
 {% endblock %}
 {% block title %}{{ projects.projectName }} | Рассчет результатов{% endblock%}
 {% block body %}
-<section id="wrapper">
+<section id="wrapper" onload="draw();">
     <section class="main-col main-col__full">
         <header>
             <h1>Результаты расчетов</h1>
         </header>
         <div class="table_project_title">Карта с объектами:</div>
+        {#<canvas id="canvas" width="150" height="150"></canvas>#}
     </section>
 </section>
-    <div style="clear: both"></div>
-    <div id="map" style="width: 100%; height: 700px"></div>
+
     <script>
-        ymaps.ready(function() {
+        function draw() {
+            var canvas = document.getElementById('canvas');
+            if (canvas.getContext){
+                var ctx = canvas.getContext('2d');
+
+                var coord = [[45,125],[125,45]];
+                // Filled triangle
+                ctx.beginPath();
+                ctx.moveTo(25,25);
+                $.each(coord, function (i, itemCoord) {
+                    console.log(itemCoord[0]);
+                    console.log(itemCoord[1]);
+                    ctx.lineTo(itemCoord[0],itemCoord[1]);
+
+                    console.log(ctx.lineTo(itemCoord[0],itemCoord[1]));
+                });
+                ctx.fill();
+
+                // Stroked triangle
+                ctx.beginPath();
+                ctx.moveTo(125,125);
+                ctx.lineTo(125,45);
+                ctx.lineTo(45,125);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+       /* function draw() {
+            var canvas = document.getElementById('canvas');
+            if (canvas.getContext) {
+                var ctx = canvas.getContext('2d');
+
+
+                var coord = [[78.5779072,53.1936766],[78.5851223,53.1856916],[78.5792259,53.1835759],[78.6339929,53.1280327],[78.6838006,53.1469389],[78.714479,53.1172703],[78.7910284,53.1442801],[78.8145199,53.1210623],[78.8399923,53.1303303],[78.8482085,53.1236719],[78.8751121,53.1326619],[78.8831219,53.1253959],[78.8955611,53.1287136],[78.9921447,53.1636684],[79.0380947,53.1791277],[79.0641361,53.1885079],[79.0470123,53.2050213],[79.0588628,53.2089615],[79.0650394,53.211866],[79.0648482,53.2038842],[79.0697534,53.2054582],[79.0736075,53.2078715],[79.0886735,53.2118583],[79.1028815,53.2190149],[79.1059823,53.218616],[79.1336994,53.1913225],[79.1205528,53.1834451],[79.0958532,53.1760438],[79.1006338,53.1660141],[79.1121868,53.1569377],[79.1299148,53.1680441],[79.1390776,53.1699546],[79.1472444,53.1755662],[79.1707489,53.1812965],[79.1824819,53.1884277],[79.1963819,53.1798285],[79.2193046,53.1859818],[79.235509,53.1681579],[79.2456141,53.1634609],[79.2537464,53.1621395],[79.2745106,53.1635938],[79.2958552,53.1633044],[79.3003732,53.1643683],[79.3013142,53.2490554],[79.3390591,53.2487266],[79.3601463,53.2479779],[79.3609259,53.2375636],[79.4298701,53.2365774],[79.4300388,53.2411605],[79.4623346,53.2405127],[79.4680135,53.3203765],[79.4831446,53.3250132],[79.4820509,53.3581281],[79.4807108,53.3685881],[79.4799898,53.3850402],[79.4759917,53.4054538],[79.4570014,53.4074068],[79.4488641,53.4090561],[79.4361534,53.4130607],[79.4075722,53.4043896],[79.3720439,53.442978],[79.3698166,53.4613741],[79.3053155,53.4620791],[79.2826374,53.4849224],[79.2624755,53.5056182],[79.2510692,53.5191566],[79.2351449,53.5343333],[79.2271253,53.5361581],[79.2032583,53.5246806],[79.2005944,53.5157161],[79.1941529,53.514243],[79.1909321,53.5111492],[79.1915078,53.5082912],[79.2108315,53.4967161],[79.2053387,53.4930807],[79.1970815,53.4956005],[79.1907748,53.4967469],[79.1832418,53.4961216],[79.1718547,53.4910148],[79.1639713,53.4909106],[79.1550368,53.4895556],[79.1515473,53.4879124],[79.1442823,53.4865474],[79.1465272,53.4771495],[79.1419852,53.4620022],[79.1328663,53.4599449],[79.1327682,53.4506218],[79.1246114,53.4470888],[79.094224,53.446852],[79.0820325,53.4418089],[79.0764489,53.437365],[79.0704724,53.4359001],[79.0667138,53.4331953],[79.0634386,53.4319982],[79.0576981,53.4300614],[79.0518759,53.4324968],[79.0472701,53.4326327],[79.0420898,53.4297661],[79.0377181,53.4263178],[79.0593654,53.40626],[79.0316706,53.3969905],[79.0231726,53.404616],[78.9986264,53.3950438],[78.9661772,53.4269353],[78.9088287,53.4054501],[78.8895139,53.3997979],[78.8968812,53.3909042],[78.871372,53.3832836],[78.8886834,53.3674853],[78.8607168,53.3564121],[78.835901,53.348697],[78.8203489,53.3644073],[78.7961095,53.3551719],[78.7219321,53.32975],[78.7031735,53.3224583],[78.7201567,53.3064172],[78.7015652,53.3017826],[78.6904897,53.3026748],[78.6840474,53.3019753],[78.6718706,53.3029847],[78.6783882,53.2919554],[78.6309777,53.27725],[78.6060029,53.2672094],[78.6416331,53.231638],[78.6671993,53.2044329],[78.6662081,53.2039161],[78.6400579,53.1948993],[78.6244898,53.2095947],[78.5779072,53.1936766]];
+                ctx.beginPath();
+                ctx.moveTo(25,25);
+                $.each(coord, function (i, itemCoord) {
+                    console.log(itemCoord[0]);
+                    console.log(itemCoord[1]);
+                    ctx.lineTo(itemCoord[0],itemCoord[1]);
+
+                    console.log(ctx.lineTo(itemCoord[0],itemCoord[1]));
+                });
+                console.log(ctx);
+                ctx.fill();
+            }
+        }*/
+
+    </script>
+    <div style="clear: both"></div>
+    <div class="tabs">
+        <div class="tabs_head">
+            <div class="tabs_head__title js-tabs_pic active_title">
+                <b>Статичная карта</b>
+            </div>
+            <div class="tabs_head__title js-tabs_map">
+                <b>Интерактивная карта</b>
+            </div>
+        </div>
+        <div class="tabs_pic">
+            <img src="{{ asset('images/static_map.jpg') }}" alt="">
+        </div>
+        <div class="tabs_map close-tab">
+            <div id="map" style="width: 100%; height: 700px"></div>
+            <p style="color: red; font-size: 16px;" class="errors-map"></p>
+        </div>
+    </div>
+
+    <script>
+       ymaps.ready(function() {
             // 0. Создаем карту:
             var map,
                 regionNames = {{ (arResult['districtMaps'] | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
@@ -48,6 +117,8 @@
                                     // Содержимое балуна.
                                     // Описываем данные геообъекта.
 
+                                    iconContent: 'test',
+                                    iconContentLayout: 'test',
                                     hintContent: item,
                                     balloonContentHeader: item,
                                     balloonContentBody: place.display_name,
@@ -59,11 +130,40 @@
                                     fillColor: 'rgba(244, 138, 0, 0.5)',
                                     // Ширина обводки.
                                     strokeWidth: 2,
-                                    strokeColor: '#000'
+                                    strokeColor: '#000',
+                                    iconContentLayout: 'test',
+                                    preset: "twirl#redDotIcon",
                                 });
+                                // При изменении координат геометрии геообъекта устанавливаем карте границы так,
+                                // чтобы охватить геообъект целиком.
+
+                                //console.log(p.geometry);
+                                //console.log(ymaps.TileCoordinates);
+                                //console.log(ymaps.TileCoordinates);
+                           // var pixelsCoords = ymaps.options.get('projection').getCoordSystem();
+
+                           // console.log(pixelsCoords);
+
+
+//                                console.log(p.geometry.getCoordinates());
+                                //console.log(p.geometry.getPixelGeometry());
+
+
+//                            var polygonBounds = p.geometry.getBounds(),
+//                                polygonCenter = [
+//                                    (polygonBounds[0][0] + polygonBounds[1][0]) / 2,
+//                                    (polygonBounds[0][1] + polygonBounds[1][1]) / 2
+//                                ],
+//                                polygonPixelCenter = myMap.options.get('projection').toGlobalPixels(polygonCenter, myMap.getZoom()),
+//                                balloonPosition = p.balloon.calculatePixelPosition(polygonPixelCenter);
+//
+//                            p.balloon.open(balloonPosition);
+
                                 // 3. Добавляем полигон на карту
                                 map.geoObjects.add(p);
                             }
+                        //console.log(ymaps);
+                        //console.log(ymaps.GeoQueryResult);
                         });
                     }
                 }, function (err) {
@@ -74,7 +174,6 @@
     </script>
 <section id="wrapper">
     <section class="main-col main-col__full">
-        <p style="color: red; font-size: 16px;" class="errors-map"></p>
         <div class="table_project_title">Параметрические признаки «точек роста»</div>
         <table class="table_pointers">
             <tr>
