@@ -26,21 +26,14 @@
         {{ form_errors(form_upload) }}
         {{ form_row(form_upload.project_id) }}
         {{ form_row(form_upload.parameter_type) }}
-        {{ form_row(form_upload.parameter_name) }}
-        {{ form_row(form_upload.district_type) }}
-        <p>Загрузите файл .csv с данными параметра. Пример файла импорта: <a target="_blank" rel="nofollow" href="{{ asset('upload/import_csv/Productions-sh_standart.csv') }}">Посмотреть</a></p>
+        {{ form_row(form_upload.parameter_name ) }}
+        <p>Загрузите файл .csv с данными параметра. Пример файла импорта: <a target="_blank" rel="nofollow" href="{{ asset('upload/import_csv/Example_for_import_parameters.csv') }}">Посмотреть</a></p>
         {{ form_row(form_upload.file) }}
 
         {{ form_rest(form_upload) }}
 
-
         <input type="submit" value="Загрузить" />
 
-        {% for label, messages in app.session.flashbag.all %}
-            {% for message in messages %}
-                <p class="form_result">{{ message }}</p>
-            {% endfor %}
-        {% endfor %}
     </section>
 </section>
 {% endblock %}
@@ -74,6 +67,33 @@
 
 {% block table_project %}
 <section class="main-col main-col_project main-col__full">
+    {% set delete = app.session.flashbag.get('delete') %}
+    {% if (delete) %}
+        <div class="success">
+            <span>Успешно!</span>
+        {% for label, messages in delete %}
+            <p>{{ messages }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% set success = app.session.flashbag.get('success') %}
+    {% if (success) %}
+        <div class="success">
+            <span>Успешно!</span>
+        {% for label, messages in success %}
+            <p>{{ messages }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% set errors = app.session.flashbag.get('error') %}
+    {% if (errors) %}
+        <div class="warning">
+            <span>Внимание!</span>
+            {% for label, message in errors %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
     <p>Уже загруженные параметры. Всего: {{ parametersLength }}</p>
     {% if parameters | length > 0 %}
         {% for itemParameter in parameters %}

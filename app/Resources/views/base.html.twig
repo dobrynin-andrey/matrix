@@ -61,7 +61,13 @@
     <div id="footer">
         {% block footer %}
             {#Symfony2 Matrix application - created by <a target="_blank" rel="nofollow" href="https://github.com/dobrynin-andrey">A. Dobrynin</a>#}
-            Matrix Application - created by Symfony2 Framework &copy; 2017
+
+        {% set nowDate = "now"|date("Y") %}
+        {% if (nowDate != "2017") %}
+            {% set nowDate = "2017 - "~nowDate %}
+        {% endif %}
+
+            Matrix Application - created by Symfony2 Framework &copy; {{ nowDate }}
         {% endblock %}
     </div>
 </section>

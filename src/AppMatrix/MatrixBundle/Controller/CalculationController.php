@@ -142,6 +142,11 @@ class CalculationController extends Controller
         $parametersAll = [];
 
         foreach ($districtsInParameterValue as $d => $itemDistrict) {
+            $parametersAll['districts'][$d]['id'] = $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
+                [
+                    'id' => $itemDistrict[1]
+                ])[0];
+
             $parametersAll['districts'][$d]['id'] = $itemDistrict[1];
             foreach ($parametersTypeArray as $k => $itemType) {
                 $i = 0;
@@ -155,10 +160,36 @@ class CalculationController extends Controller
                             if ($itemValue->getDistrict()->getId() == $itemDistrict[1] &&
                             $itemValue->getParameter()->getId() == $itemId->getId()) {
                                 $parametersAll['districts'][$d]['parameterType'][$k]['parameters'][$i]['parameterValues'][] = $itemValue;
-                               ;
                             }
                         }
                         $i++;
+                    }
+                }
+            }
+        }
+
+
+        /**
+         *  Убираем из массива элементы у которых нет значений у годов
+         */
+
+        foreach ($parametersAll['districts'] as $d => $district) {
+            foreach ($district['parameterType'] as $t => $parameterType) {
+                foreach ($parameterType['parameters'] as $p => $itemParameter) { // Перебираем массив параметров
+                    if (isset($itemParameter['parameterValues'])) {
+                        foreach ($itemParameter['parameterValues'] as $v => $itemValue) { // Перебираем значение каждого параметра
+                            if ($itemValue->getParameterValue() == -1) {
+
+                                $paramName = $itemValue->getParameter()->getParameterName();
+                                $districtName = $itemValue->getDistrict()->getDistrictName();
+                                $this->addFlash('error_district', 'Объект: ' . $districtName . ' не учавствует в расчетах, из-за отуствия значения в параметре - ' . $paramName . '!');
+                                unset($parametersAll['districts'][$d]);
+                                continue;
+                            }
+                        }
+                    } else {
+                        unset($parametersAll['districts'][$d]);
+                        continue;
                     }
                 }
             }
@@ -172,11 +203,7 @@ class CalculationController extends Controller
 
         $M1 = [];
 
-        //dump($parametersAll['districts']);
         foreach ($parametersAll['districts'] as $d => $district) {
-//            if ($d == 1) {
-//                break;
-//            }
             foreach ($district['parameterType'] as $t => $parameterType) {
 
                 /**
@@ -203,14 +230,11 @@ class CalculationController extends Controller
                             for ($i = 0; $i < count($district['parameterType'][3]['parameters']); $i++) { // Перебираем значения второго типа
 
                                 $yearValue = $itemValue->getParameterValue(); // Значение текущего параметра
-
-                                $fourthTypeValue =  $district['parameterType'][3]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
+                                $fourthTypeValue = $district['parameterType'][3]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
                                 //Запись в M1
                                 $M1[$district['id']][$itemValue->getYear()]['zone-2'][$itemParameter['parameterId']->getId()][$district['parameterType'][3]['parameters'][$i]['parameterId']->getId()] = $yearValue / $fourthTypeValue;
 
-
                             }
-
                         }
                     }
                 }
@@ -224,7 +248,8 @@ class CalculationController extends Controller
 
                                 $yearValue = $itemValue->getParameterValue(); // Значение текущего параметра
 
-                                $thirdTypeValue =  $district['parameterType'][2]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
+                                $thirdTypeValue = $district['parameterType'][2]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
+
                                 //Запись в M1
                                 $M1[$district['id']][$itemValue->getYear()]['zone-3'][$itemParameter['parameterId']->getId()][$district['parameterType'][2]['parameters'][$i]['parameterId']->getId()] = $yearValue / $thirdTypeValue;
 
@@ -236,7 +261,7 @@ class CalculationController extends Controller
 
                                 $yearValue = $itemValue->getParameterValue(); // Значение текущего параметра
 
-                                $fourthTypeValue =  $district['parameterType'][3]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
+                                $fourthTypeValue = $district['parameterType'][3]['parameters'][$i]['parameterValues'][$v]->getParameterValue(); // Значение параметра
                                 //Запись в M1
                                 $M1[$district['id']][$itemValue->getYear()]['zone-4'][$itemParameter['parameterId']->getId()][$district['parameterType'][3]['parameters'][$i]['parameterId']->getId()] = $yearValue / $fourthTypeValue;
 
@@ -250,7 +275,6 @@ class CalculationController extends Controller
             }
 
         }
-
 
         /**
          * Этап 2. Деление одного года на другой
@@ -311,6 +335,7 @@ class CalculationController extends Controller
             foreach ($districts as $itemDistrict) { // Перебираем найденные объекты
                 if ($rm === $itemDistrict->getId()) {  // Сравниваем Id из текущего массива
                     $coefficients[$rm]['name'] = $itemDistrict->getDistrictName(); // Присваеваем имя текущему элементу массива
+                    $coefficients[$rm]['id'] = $itemDistrict->getId(); // Присваеваем id текущему элементу массива
                 }
 
             }
@@ -401,6 +426,7 @@ class CalculationController extends Controller
             foreach ($districts as $itemDistrictDB) { // Перебираем найденные объекты
                 if ($iD === $itemDistrictDB->getId()) {  // Сравниваем Id из текущего массива
                     $pointers[$iD]['name'] = $itemDistrictDB->getDistrictName(); // Присваеваем имя текущему элементу массива
+                    $pointers[$iD]['id'] = $itemDistrictDB->getId(); // Присваеваем id текущему элементу массива
 
                     // Дополнительный массив для карты
                     $districtMaps[] = str_replace(' муниципальный', '',$itemDistrictDB->getDistrictName());

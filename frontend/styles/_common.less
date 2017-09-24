@@ -122,7 +122,7 @@ body {
     width: 300px;
     padding:  20px;
     display: inline-block;
-    min-height: 365px;
+    min-height: 300px;
     position: relative;
 }
 
@@ -227,7 +227,7 @@ form.blogger select {
     font-size: 20px;
 }
 
-form .form_result {
+.form_result {
     font-weight: 800;
     font-size: 18px;
     margin: 20px 0 0 110px;
@@ -315,4 +315,44 @@ form .form_result {
 .active_title {
     border-bottom: 5px solid #F48A00;
     background-color: rgba(225, 225, 225, 0.2);
+}
+.warning {
+    border: 1px solid red;
+    padding: 20px 20px 0 20px;
+    background-color: rgba(234, 73, 73, 0.1);
+    margin-bottom: 20px;
+    color: red;
+    border-radius: 10px;
+
+    & span {
+
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    & p {
+        font-size: inherit;
+    }
+}
+.success {
+    border: 1px solid green;
+    padding: 20px 20px 0 20px;
+    background-color: rgba(0, 128, 0, 0.10);
+    margin-bottom: 20px;
+    color: green;
+    border-radius: 10px;
+
+    & span {
+
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    & p {
+        font-size: inherit;
+    }
 }

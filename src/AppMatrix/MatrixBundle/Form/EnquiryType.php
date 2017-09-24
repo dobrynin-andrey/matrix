@@ -33,11 +33,6 @@ class EnquiryType extends AbstractType
                     'label' => 'Название параметра: '
                 )
             )
-            ->add('district_type', TextType::class,
-                array(
-                    'label' => 'Тип района: '
-                )
-            )
             ->add('file', FileType::class,
                 array(
                     'label' => 'Файл: ',

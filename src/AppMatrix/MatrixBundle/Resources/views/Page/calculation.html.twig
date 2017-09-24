@@ -80,7 +80,10 @@
         </div>
         <div class="tabs_map close-tab">
             <div id="map" style="width: 100%; height: 700px"></div>
-            <p style="width: 1170px; margin: 25px auto; color: red; font-size: 16px;" class="errors-map"></p>
+             <div style="display: none; width: 1170px; margin: 25px auto; padding-bottom: 20px"  class="warning warning-map">
+                <span>Ошибка карты!</span>
+                <p class="errors-map"></p>
+             </div>
         </div>
     </div>
 
@@ -105,6 +108,7 @@
                 $.getJSON(url, {q: region + item, format: "json", polygon_geojson: 1, limit: 1}).then(function (data) {
                     if (data.length == 0) {
                         $('.errors-map').append('Объект с именем: ' + item + ' - отсутствует в базе карт!<br>');
+                        $('.warning-map').show();
                         console.log('Объект с именем: ' + item + ' - отсутствует в базе карт!');
                     } else  {
                     $.each(data, function(ix, place) {
@@ -174,6 +178,15 @@
     </script>
 <section id="wrapper">
     <section class="main-col main-col__full">
+        {% set errors = app.session.flashbag.get('error_district') %}
+        {% if (errors) %}
+            <div class="warning">
+                <span>Внимание!</span>
+                {% for label, message in errors %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="table_project_title">Параметрические признаки «точек роста»</div>
         <table class="table_pointers">
             <tr>
@@ -185,7 +198,9 @@
             {% for key, itemPointers in arResult['pointers'] %}
                 <tr>
                     <td style="background: #fff;" rowspan="9">{{ loop.index }}</td>
-                    <td id="growth-point-id-{{ loop.index0 }}" style="background: #fff; text-align: left;" rowspan="9">{{ itemPointers['name'] }}</td>
+                    <td id="growth-point-id-{{ loop.index0 }}" style="background: #fff; text-align: left;" rowspan="9">
+                        <a href="/{{ projects.id }}/district/{{ itemPointers['id'] }}/">{{ itemPointers['name'] }}</a>
+                    </td>
                 </tr>
                 {% for key, item in itemPointers['pointers'] %}
                     <tr {% if key == 7 %}style="border-bottom: 1px solid #ccc;"{% endif %}>
@@ -213,7 +228,7 @@
             {% for itemCoefficients in arResult['coefficients'] %}
                 <tr id="growth-pole-id-{{ loop.index0 }}">
                     <td>{{ loop.index }}</td>
-                    <td>{{ itemCoefficients['name'] }}</td>
+                    <td><a href="/{{ projects.id }}/district/{{ itemCoefficients['id'] }}/">{{ itemCoefficients['name'] }}</a></td>
                     <td>{{ itemCoefficients['zone-1']['value'] }}</td>
                     <td>{{ itemCoefficients['zone-2']['value'] }}</td>
                     <td>{{ itemCoefficients['zone-3']['value'] }}</td>

@@ -65,21 +65,6 @@ class Form
         $this->parameter_name = $parameter_name;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDistrictType()
-    {
-        return $this->district_type;
-    }
-
-    /**
-     * @param mixed $district_type
-     */
-    public function setDistrictType($district_type)
-    {
-        $this->district_type = $district_type;
-    }
 
     /**
      * @return mixed

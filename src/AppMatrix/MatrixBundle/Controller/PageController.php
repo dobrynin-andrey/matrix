@@ -30,6 +30,10 @@ class PageController extends Controller
 
     public function formAction(Project $project, Request $request) {
 
+        // Флаг продолжения ипорта
+        $continue = true;
+        $continueDistrict = true;
+
         /**
          * Форма отправки
          */
@@ -49,8 +53,6 @@ class PageController extends Controller
                 // Получаем значения параметров
                 $parameter_name = $enquiry->getParameterName();
                 $parameter_type = $enquiry->getParameterType();
-                $district_type = $enquiry->getDistrictType();
-                //$project_id = $enquiry->getProjectId();
                 $file = $enquiry->getFile()->getClientOriginalName();
                 $path = $enquiry->getFile()->getRealPath();
 
@@ -68,60 +70,124 @@ class PageController extends Controller
                     // Берем объект project_type из таблицы
                     $parameterTypeID = $this->get('doctrine.orm.entity_manager')->getRepository('AppMatrixMatrixBundle:ParameterType')->find($parameter_type);
 
-                    // Запись в табилцу "parameter"
-                    $parameter = new CreateParameter;
-                    $addParameter = $parameter->Add($this,  $parameter_name, $parameterTypeID);
+                    // Проверка на наличие параметра с таким же именем
 
+                    if (!empty($parameter_name)) {
 
-                    // Перебор распарсенных данных
-                    foreach ($arrParse as $itemParse) {
-
-                        // Запись в табилцу "district"
-                        $district = new CreateDistrict;
                         $em = $this->getDoctrine()->getManager();
-                        // Берем загруженные районы
-                        $districtDB = $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
+                        // Есть ли такой параметр в базе
+                        $parameterDB = $em->getRepository('AppMatrixMatrixBundle:Parameter')->findBy(
                             [
-                                'district_name' => $itemParse['district_name'],
-                                'district_type' => $district_type
+                                'parameter_name' => $parameter_name,
                             ]
                         );
+                        // Есть ли такой параметр у данного проекта
+                        if (isset($parameterDB)) {
+                            foreach ($parameterDB as $itemParam) {
+                                $parametersValuesDB = $em
+                                    ->getRepository('AppMatrixMatrixBundle:ParameterValues')
+                                    ->findBy([
+                                        "project" => $project->getId(),
+                                        "parameter" => $itemParam->getId()
+                                    ]);
+
+                            }
+
+                        }
+
+                        if (!empty($parametersValuesDB)) {
+                            $this->addFlash('error', 'Параметер с именем: "' . $parameter_name . '" - уже сеществует!');
+                            $continue = false;
+                        }
+                    }
 
 
-                        $addDistrict = '';
+                    // Если такого параметра нет, то продолжаем импорт
 
-                        if (!empty($districtDB)) {
-                            // Проверка на наличие уже существующих районов
-                            foreach ($districtDB as $itemDistrictDB) {
-                                if ($itemDistrictDB->getDistrictName() != $itemParse['district_name']) {
-                                    $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
+                    if ($continue) {
+                        // Запись в табилцу "parameter"
+                        $parameter = new CreateParameter;
+                        $addParameter = $parameter->Add($this,  $parameter_name, $parameterTypeID);
+
+
+                        // Перебор распарсенных данных
+                        foreach ($arrParse["result"] as $itemParse) {
+
+                            // Запись в табилцу "district"
+                            $district = new CreateDistrict;
+                            $em = $this->getDoctrine()->getManager();
+
+
+                            // Тип объекта
+                            if (isset($itemParse["type"])) {
+                                $district_type = $itemParse["type"];
+                            } else {
+                                $this->addFlash('error', 'Предупреждение! При загрузке параметра: "' . $parameter_name . '", у объекта - ' . $itemParse['district_name'] . ' - ну указан тип! Удалите параметр, исправьте ипмпортируемый файл, произведите загрузку повторно, иначе данный объект не будет участвовать в дальнейших расчетах, загруженного параметра!');
+                                $continueDistrict = false;
+                            }
+
+
+                            // Если тип объекта не указан, то не импотируем его
+                            if ($continueDistrict) {
+                                // Берем загруженные районы
+                                if (!empty($itemParse['district_name'])) {
+                                    $districtDB = $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
+                                        [
+                                            'district_name' => $itemParse['district_name'],
+                                            'district_type' => $district_type
+                                        ]
+                                    );
                                 } else {
-                                    $addDistrict = $itemDistrictDB;
+                                    break;
+                                }
+
+
+                                $addDistrict = '';
+
+                                if (!empty($districtDB)) {
+                                    // Проверка на наличие уже существующих районов
+                                    foreach ($districtDB as $itemDistrictDB) {
+                                        if ($itemDistrictDB->getDistrictName() != $itemParse['district_name']) {
+                                            $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
+                                        } else {
+                                            $addDistrict = $itemDistrictDB;
+                                        }
+
+                                    }
+                                } else {
+                                    $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
+
+                                }
+
+                                foreach ($itemParse['year'] as  $year) {
+                                    $parameterValue = new CreateParameterValues;
+                                    $addParameterValue = $parameterValue->Add($this, $project, $addDistrict, $addParameter, $itemParse['parameter_value'][$year], $year);
+
                                 }
 
                             }
+                            $continueDistrict = true;
+                        }
+
+
+                        if (!empty($addParameter)) {
+                            $this->addFlash('success', 'Загрузка прошла успешно!');
                         } else {
-                            $addDistrict = $district->Add($this, $itemParse['district_name'], $district_type);
-
-                        }
-
-
-                        foreach ($itemParse['year'] as  $year) {
-
-                            $parameterValue = new CreateParameterValues;
-                            $addParameterValue = $parameterValue->Add($this, $project, $addDistrict, $addParameter, $itemParse['parameter_value'][$year], $year);
-
+                            $this->addFlash('error', 'Загрузка прошла неудачно!');
                         }
                     }
 
-                    if (!empty($addParameter)){
-                        $this->addFlash('success', 'Загрузка прошла успешно!');
-                    } else {
-                        $this->addFlash('unsuccess', 'Загрузка прошла неудачно!');
-                    }
+
                 } else {
                     $this->addFlash('error', 'Загруженный файл не является .csv!');
                 }
+
+                if (isset($arrParse["errors"]["values"])) {
+                    foreach ($arrParse["errors"]["values"] as $e => $error) {
+                        $this->addFlash('error', $error);
+                    }
+                }
+
 
 
                 return $this->redirectToRoute('AppMatrixMatrixBundle_project_form', array('id' => $project->getId()));
