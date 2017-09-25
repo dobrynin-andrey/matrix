@@ -102,6 +102,55 @@ class CalculationController extends Controller
             ->getQuery()
             ->getResult();
 
+
+        // Функция фильтрации объектов по клику
+        function FilterDistrict ($this_is, $query, $districtsInParameterValue) {
+
+            $arFiltersId = [];
+            $arDistrictItems = [];
+            $arDiffResult = [];
+
+            // Проверка параметра
+            if ($query == "mr") {
+                $districtType = "Муниципальный район";
+            } elseif ($query == "go") {
+                $districtType = "Городской округ";
+            } else {
+                goto end;
+            }
+
+            // Выборка объектов запрошенного типа
+            $em = $this_is->getDoctrine()->getManager();
+            $districtFilter =  $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
+                [
+                    'district_type' => $districtType
+                ]);
+
+            // Получение массива запрошенных объектов
+            foreach ($districtFilter as $dF) {
+                $arFiltersId[] = $dF->getId();
+            }
+            // Перебор массива полученного на предыдущем запросе, для извабления от вложенности массивов
+            end:
+            foreach ($districtsInParameterValue as $itemD) {
+                $arDistrictItems[] = $itemD[1];
+            }
+
+            // Сравнение двух массивов для получения нужных id
+            if ($arFiltersId) {
+                $arDiffResult = array_intersect($arDistrictItems, $arFiltersId);
+            } else {
+                $arDiffResult = $arDistrictItems;
+            }
+
+            return $arDiffResult;
+
+        }
+
+        // Применение функции фильтрации
+        $districtsInParameterValue = FilterDistrict($this, $request->query->get('filter'), $districtsInParameterValue);
+
+
         $arrDistricts =[];
 
         // Справочник всех типов параметров
@@ -144,10 +193,10 @@ class CalculationController extends Controller
         foreach ($districtsInParameterValue as $d => $itemDistrict) {
             $parametersAll['districts'][$d]['id'] = $em->getRepository('AppMatrixMatrixBundle:District')->findBy(
                 [
-                    'id' => $itemDistrict[1]
+                    'id' => $itemDistrict
                 ])[0];
 
-            $parametersAll['districts'][$d]['id'] = $itemDistrict[1];
+            $parametersAll['districts'][$d]['id'] = $itemDistrict;
             foreach ($parametersTypeArray as $k => $itemType) {
                 $i = 0;
                 foreach ($allParametersBD as $itemId) {
@@ -157,7 +206,7 @@ class CalculationController extends Controller
                         $parametersAll['districts'][$d]['parameterType'][$k]['nameType'] = $itemType->getParameterType();
                         $parametersAll['districts'][$d]['parameterType'][$k]['parameters'][$i]['parameterId'] = $itemId;
                         foreach ($parameterValues as $itemValue) {
-                            if ($itemValue->getDistrict()->getId() == $itemDistrict[1] &&
+                            if ($itemValue->getDistrict()->getId() == $itemDistrict &&
                             $itemValue->getParameter()->getId() == $itemId->getId()) {
                                 $parametersAll['districts'][$d]['parameterType'][$k]['parameters'][$i]['parameterValues'][] = $itemValue;
                             }
@@ -315,7 +364,7 @@ class CalculationController extends Controller
          */
 
         foreach ($districtsInParameterValue as $itemDistrict) { // Формируем массив ID районов из ранее найденного массива
-            array_push($arrDistricts ,$itemDistrict[1]);
+            array_push($arrDistricts, $itemDistrict);
         }
 
         $districts = $em->getRepository('AppMatrixMatrixBundle:District')->findBy( // Находим объекты из БД

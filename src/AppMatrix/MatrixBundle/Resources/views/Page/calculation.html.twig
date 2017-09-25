@@ -10,6 +10,15 @@
         <header>
             <h1>Результаты расчетов</h1>
         </header>
+        <div class="filter">
+            <h3><b>Фильтр по:</b></h3>
+            <ul>
+                <li><a href="/{{ projects.id }}/calculation">Всем объектам</a></li>
+                <li><a href="?filter=mr">Муниципальным районам</a></li>
+                <li> <a href="?filter=go">Городским округам</a></li>
+            </ul>
+        </div>
+
         <div class="table_project_title">Карта с объектами:</div>
         {#<canvas id="canvas" width="150" height="150"></canvas>#}
     </section>
