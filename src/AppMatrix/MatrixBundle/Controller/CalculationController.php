@@ -138,17 +138,31 @@ class CalculationController extends Controller
 
             // Сравнение двух массивов для получения нужных id
             if ($arFiltersId) {
-                $arDiffResult = array_intersect($arDistrictItems, $arFiltersId);
+                $arDiffResult["result"] = array_intersect($arDistrictItems, $arFiltersId);
+                $arDiffResult["error"] = false;
+                if (empty($arDiffResult["result"])) {
+                    $arDiffResult["result"] = $arDistrictItems;
+                    $arDiffResult["error"] = true;
+                }
             } else {
-                $arDiffResult = $arDistrictItems;
+                $arDiffResult["result"] = $arDistrictItems;
+                $arDiffResult["error"] = false;
             }
 
             return $arDiffResult;
 
         }
 
+        $resultFunc["error"] = [];
         // Применение функции фильтрации
-        $districtsInParameterValue = FilterDistrict($this, $request->query->get('filter'), $districtsInParameterValue);
+        $resultFunc = FilterDistrict($this, $request->query->get('filter'), $districtsInParameterValue);
+
+        $districtsInParameterValue = $resultFunc["result"];
+
+        if ($resultFunc["error"]) {
+            $this->addFlash('error_district', 'Объекты типа: Городской округ - отсутствуют!');
+        }
+
 
 
         $arrDistricts =[];
