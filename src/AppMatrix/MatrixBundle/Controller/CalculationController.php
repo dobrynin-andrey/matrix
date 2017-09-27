@@ -245,7 +245,7 @@ class CalculationController extends Controller
 
                                 $paramName = $itemValue->getParameter()->getParameterName();
                                 $districtName = $itemValue->getDistrict()->getDistrictName();
-                                $this->addFlash('error_district', 'Объект: ' . $districtName . ' не участвует в расчетах, из-за отсутвия значения в параметре - ' . $paramName . '!');
+                                $this->addFlash('error_district', 'Объект: ' . $districtName . ' не участвует в расчетах, из-за отсутствия значения в параметре - ' . $paramName . '!');
                                 unset($parametersAll['districts'][$d]);
                                 continue;
                             }
