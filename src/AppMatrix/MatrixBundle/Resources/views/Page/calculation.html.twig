@@ -112,7 +112,7 @@
             });
             map.behaviors.disable('scrollZoom');
             // 1. Запрашиваем через геокодер район (у Яндекса этой возможности пока нет, придется пользоваться OSM)
-            var url = "http://nominatim.openstreetmap.org/search";
+            var url = "https://nominatim.openstreetmap.org/search";
             $.each(regionNames, function (i, item) {
                 $.getJSON(url, {q: region + item, format: "json", polygon_geojson: 1, limit: 1}).then(function (data) {
                     if (data.length == 0) {
