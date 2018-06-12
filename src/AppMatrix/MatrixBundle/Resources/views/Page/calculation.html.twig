@@ -263,13 +263,12 @@
                     datasets: [{
                         label: 'Показатель приоритетности',
                         data: {{ (coefficientsJSON['PTR'] | json_encode(constant('JSON_UNESCAPED_UNICODE')) | raw) }},
-                        backgroundColor: [
-                            'rgba(244, 138, 0, 0.5)'
-                        ],
-                        borderColor: [
-                            'rgba(244, 138, 0, 1)'
-                        ],
-                        borderWidth: 1
+                        backgroundColor: 'rgba(244, 138, 0, 0.5)',
+                        borderColor: 'rgba(0, 0, 0, 0.5)',
+                        borderWidth: 1,
+                        pointRadius: 4,
+                        pointBackgroundColor:  'rgba(0, 0, 0, 0.5)',
+                        pointBorderColor:  'rgba(0, 0, 0, 1)'
                     }]
                 },
                 options: {
